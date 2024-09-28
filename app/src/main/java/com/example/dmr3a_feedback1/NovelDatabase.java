@@ -2,6 +2,7 @@ package com.example.dmr3a_feedback1;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class NovelDatabase {
 
@@ -29,5 +30,15 @@ public class NovelDatabase {
 
     public void removeNovel(Novel novel) {
         novels.remove(novel);
+    }
+
+    public List<Novel> getFavoriteNovels() {
+        return novels.stream()
+                .filter(novel -> novel.getIsFavorite())
+                .collect(Collectors.toList());
+    }
+
+    public void toggleFavorite(Novel novel) {
+        novel.setFavorite(!novel.getIsFavorite()); // Especificar la clase Novel
     }
 }
