@@ -45,16 +45,27 @@ fun NovelApp() {
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(if (currentScreen == Screen.Favorites) "Favoritos" else "Novelas") },
+                title = { Text(
+                    when (currentScreen) {
+                        Screen.ViewNovels -> "Novelas"
+                        Screen.AddNovel -> "Añade una novela"
+                        Screen.Favorites -> "Favoritos"
+
+                    }
+                )
+                     },
                 actions = {
+                    if (currentScreen != Screen.AddNovel) {
                     IconButton(
                         onClick = { currentScreen = Screen.Favorites },
                         colors = IconButtonDefaults.iconButtonColors(
                             contentColor = Color.Red
                         )
-                        ) {
+                    ) {
                         Icon(Icons.Filled.Favorite, contentDescription = "Favoritos")
                     }
+
+                }
                 }
             )
         }
@@ -77,11 +88,12 @@ enum class Screen {
 
 @Composable
 fun FavoritesScreen(novelDatabase: NovelDatabase, onBackToHome: () -> Unit) {
-    val favoriteNovels = novelDatabase.getFavoriteNovels()
+    var favoriteNovels by remember { mutableStateOf(novelDatabase.getFavoriteNovels()) }
+    var refresh by remember { mutableStateOf(false) }
 
     Column {
 
-        Button(onClick = onBackToHome) { // Agregar botón
+        Button(onClick = onBackToHome) {
             Text("Volver al inicio")
         }
 
@@ -89,13 +101,29 @@ fun FavoritesScreen(novelDatabase: NovelDatabase, onBackToHome: () -> Unit) {
             Text("No hay novelas favoritas.")
         } else {
             favoriteNovels.forEach { novel ->
-                Text("Título: ${novel.title}")
-                Text("Autor: ${novel.author}")
-                Text("Año: ${novel.year}")
-                Text("Sinopsis: ${novel.synopsis}")
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Column(modifier = Modifier.weight(1f)) {
+                        Text("Título: ${novel.title}")
+                        Text("Autor: ${novel.author}")
+                        Text("Año: ${novel.year}")
+                        Text("Sinopsis: ${novel.synopsis}")
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
+                    IconButton(onClick = {
+                        novelDatabase.toggleFavorite(novel)
+                        favoriteNovels = novelDatabase.getFavoriteNovels()
+                        refresh = !refresh
+                    }) {
+                        Icon(Icons.Filled.Delete, contentDescription = "Eliminar de favoritos")
+                    }
+                }
                 Spacer(modifier = Modifier.height(8.dp))
             }
         }
+    }
+
+    LaunchedEffect(refresh) {
+
     }
 }
 
