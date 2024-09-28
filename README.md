@@ -1,8 +1,8 @@
-# NovelApp
+# Feedback1
 
 ## Descripción
 
-NovelApp es una aplicación Android sencilla para gestionar una colección de novelas. Permite a los usuarios agregar, eliminar, ver detalles y marcar novelas como favoritas. Además, los usuarios pueden agregar reseñas a las novelas.
+Este proyecto de Android desarrollado con kotline y compose tiene la funcionalidad de gestionar una colección de novelas. Permite a los usuarios agregar, eliminar, ver detalles y marcar novelas como favoritas. Además, los usuarios pueden agregar reseñas a las novelas.
 
 ## Funcionalidades
 
