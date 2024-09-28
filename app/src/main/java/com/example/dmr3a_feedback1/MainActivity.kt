@@ -5,6 +5,8 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowForward
@@ -22,13 +24,18 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalSoftwareKeyboardController
+import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+
+
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -45,6 +52,13 @@ fun NovelApp() {
        val novelDatabase = remember { NovelDatabase.getInstance() }
     var currentNovel by remember { mutableStateOf<Novel?>(null) }
     var currentScreen by remember { mutableStateOf(Screen.ViewNovels) }
+
+    MaterialTheme(
+
+        colorScheme = darkColorScheme(
+            background = Color.,
+        )
+    ){
 
     Scaffold(
         topBar = {
@@ -112,6 +126,7 @@ fun NovelApp() {
         }
     }
 }
+    }
 
 enum class Screen {
     ViewNovels,
@@ -122,11 +137,12 @@ enum class Screen {
 }
 
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun AddReviewScreen(novel: Novel, novelDatabase: NovelDatabase, onReviewAdded: () -> Unit) {
     var reviewText by remember { mutableStateOf("") }
     var usuario by remember { mutableStateOf("") }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
 
     Column(modifier = Modifier
@@ -136,14 +152,28 @@ fun AddReviewScreen(novel: Novel, novelDatabase: NovelDatabase, onReviewAdded: (
             value = usuario, // Añadir un campo para el nombre del autor
             onValueChange = { usuario = it },
             label = { Text("Tu nombre") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                }
+            )
+
         )
         Spacer(modifier = Modifier.height(8.dp))
         OutlinedTextField(
             value = reviewText,
             onValueChange = { reviewText = it },
             label = { Text("Escribe tu reseña") },
-            modifier = Modifier.fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                }
+        )
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
@@ -313,6 +343,7 @@ fun AddNovelScreen(novelDatabase: NovelDatabase, onNovelAdded: () -> Unit) {
     var author by remember { mutableStateOf("") }
     var year by remember { mutableStateOf("") }
     var synopsis by remember { mutableStateOf("") }
+    val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(
         modifier = Modifier
@@ -324,22 +355,46 @@ fun AddNovelScreen(novelDatabase: NovelDatabase, onNovelAdded: () -> Unit) {
         OutlinedTextField(
             value = title,
             onValueChange = { title = it },
-            label = { Text("Título") }
+            label = { Text("Título") },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                }
+            )
         )
         OutlinedTextField(
             value = author,
             onValueChange = { author = it },
-            label = { Text("Autor") }
+            label = { Text("Autor") },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                }
+            )
         )
         OutlinedTextField(
             value = year,
             onValueChange = { year = it },
-            label = { Text("Año") }
+            label = { Text("Año") },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                }
+            )
         )
         OutlinedTextField(
             value = synopsis,
             onValueChange = { synopsis = it },
-            label = { Text("Sinopsis") }
+            label = { Text("Sinopsis") },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                }
+            )
         )
         Spacer(modifier = Modifier.height(16.dp))
         Button(onClick = {
