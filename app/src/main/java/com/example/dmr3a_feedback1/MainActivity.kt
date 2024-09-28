@@ -13,6 +13,7 @@ import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -24,6 +25,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.darkColorScheme
 import androidx.compose.runtime.*
 import androidx.compose.runtime.getValue
@@ -49,84 +51,101 @@ class MainActivity : ComponentActivity() {
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NovelApp() {
-       val novelDatabase = remember { NovelDatabase.getInstance() }
+    val novelDatabase = remember { NovelDatabase.getInstance() }
     var currentNovel by remember { mutableStateOf<Novel?>(null) }
     var currentScreen by remember { mutableStateOf(Screen.ViewNovels) }
 
     MaterialTheme(
 
         colorScheme = darkColorScheme(
-            background = Color.,
+            background = Color.Blue
         )
     ){
 
-    Scaffold(
-        topBar = {
-            CenterAlignedTopAppBar(
-                title = { Text(
-                    when (currentScreen) {
-                        Screen.ViewNovels -> "Novelas"
-                        Screen.AddNovel -> "Añade una novela"
-                        Screen.Favorites -> "Favoritos"
-                        Screen.NovelDetails -> "Detalles"
-                        Screen.AddReview -> "Añadir reseña"
-                    }
-                )
-                     },
+        Scaffold(
+            topBar = {
+                CenterAlignedTopAppBar(
+                    title = { Text(
+                        when (currentScreen) {
+                            Screen.ViewNovels -> "Novelas"
+                            Screen.AddNovel -> "Añade una novela"
+                            Screen.Favorites -> "Favoritos"
+                            Screen.NovelDetails -> "Detalles"
+                            Screen.AddReview -> "Añadir reseña"
+                        }
+                    )
+                    },
                 navigationIcon = {
                     if (currentScreen == Screen.NovelDetails) {
                         IconButton(onClick = { currentScreen = Screen.ViewNovels }) {
                             Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
                         }
                     }
-                },
-                actions = {
-                    if (currentScreen != Screen.AddNovel) {
-                    IconButton(
-                        onClick = { currentScreen = Screen.Favorites },
-                        colors = IconButtonDefaults.iconButtonColors(
-                            contentColor = Color.Red
-                        )
-                    ) {
-                        Icon(Icons.Filled.Favorite, contentDescription = "Favoritos")
+                    else if (currentScreen == Screen.AddNovel) {
+                IconButton(onClick = { currentScreen = Screen.ViewNovels }) {
+                    Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
+                }
+            }else if (currentScreen == Screen.Favorites) {
+                        IconButton(onClick = { currentScreen = Screen.ViewNovels }) {
+                            Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
+                        }
                     }
+                    else if (currentScreen == Screen.AddReview) {
+                        IconButton(onClick = { currentScreen = Screen.NovelDetails }) {
+                            Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
+                        }
+                    }
+                },
 
-                }
-                }
-            )
-        }
-    ) { innerPadding ->
-        Box(modifier = Modifier.padding(innerPadding)) {
-            when (currentScreen) {
-                Screen.ViewNovels -> ViewNovelsScreen(novelDatabase, onAddNovelClick = { currentScreen = Screen.AddNovel }) { novel ->
-                    currentNovel = novel
-                    currentScreen = Screen.NovelDetails
-                }
-                Screen.AddNovel -> AddNovelScreen(novelDatabase) { currentScreen = Screen.ViewNovels }
-                Screen.Favorites -> FavoritesScreen(novelDatabase, onBackToHome = { currentScreen = Screen.ViewNovels }, onNovelClick = { novel ->
-                    currentNovel = novel
-                    currentScreen = Screen.NovelDetails
-                })
-                Screen.NovelDetails -> if (currentNovel != null) {
-                    NovelDetailsScreen(
-                        novel = currentNovel!!,
-                        novelDatabase = novelDatabase,
-                        onBack = { currentScreen = Screen.ViewNovels },
-                        onAddReviewClick = { currentScreen = Screen.AddReview } // Añadir onAddReviewClick
-                    )
-                }
-                Screen.AddReview -> if (currentNovel != null) {
-                    AddReviewScreen(
-                        novel = currentNovel!!,
-                        novelDatabase = novelDatabase,
-                        onReviewAdded = { currentScreen = Screen.NovelDetails }
-                    )
+                    actions = {
+                        if (currentScreen != Screen.AddNovel) {
+                            IconButton(
+                                onClick = { currentScreen = Screen.Favorites },
+                                colors = IconButtonDefaults.iconButtonColors(
+                                    contentColor = Color.Red
+                                )
+                            ) {
+                                Icon(Icons.Filled.Favorite, contentDescription = "Favoritos")
+                            }
+
+                        }
+                    }
+                )
+            }
+        ) { innerPadding ->
+            Box(modifier = Modifier.padding(innerPadding)) {
+                when (currentScreen) {
+                    Screen.ViewNovels -> ViewNovelsScreen(novelDatabase, onAddNovelClick = { currentScreen = Screen.AddNovel }) { novel ->
+                        currentNovel = novel
+                        currentScreen = Screen.NovelDetails
+                    }
+                    Screen.AddNovel -> AddNovelScreen(novelDatabase) { currentScreen = Screen.ViewNovels }
+                    Screen.Favorites -> FavoritesScreen(novelDatabase, onBackToHome = { currentScreen = Screen.ViewNovels }, onNovelClick = { novel ->
+                        currentNovel = novel
+                        currentScreen = Screen.NovelDetails
+                    })
+                    Screen.NovelDetails -> if (currentNovel != null) {
+                        NovelDetailsScreen(
+                            novel = currentNovel!!,
+                            novelDatabase = novelDatabase,
+                            onBack = { currentScreen = Screen.ViewNovels },
+                            onAddReviewClick = { currentScreen = Screen.AddReview } // Añadir onAddReviewClick
+                        )
+                    }
+                    Screen.AddReview -> if (currentNovel != null) {
+                        AddReviewScreen(
+                            novel = currentNovel!!,
+                            novelDatabase = novelDatabase,
+                            onReviewAdded = { currentScreen = Screen.NovelDetails },
+                            onBackToDetails = { currentScreen = Screen.NovelDetails }
+
+                        )
+                    }
                 }
             }
         }
     }
 }
-    }
 
 enum class Screen {
     ViewNovels,
@@ -139,17 +158,24 @@ enum class Screen {
 
 
 @Composable
-fun AddReviewScreen(novel: Novel, novelDatabase: NovelDatabase, onReviewAdded: () -> Unit) {
+fun AddReviewScreen(novel: Novel, novelDatabase: NovelDatabase, onReviewAdded: () -> Unit , onBackToDetails: () -> Unit) {
     var reviewText by remember { mutableStateOf("") }
     var usuario by remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
+    var showDialog by remember { mutableStateOf(false) }
+
+
+
+
 
 
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)) {
+
+
         OutlinedTextField(
-            value = usuario, // Añadir un campo para el nombre del autor
+            value = usuario,
             onValueChange = { usuario = it },
             label = { Text("Tu nombre") },
             modifier = Modifier.fillMaxWidth(),
@@ -173,15 +199,35 @@ fun AddReviewScreen(novel: Novel, novelDatabase: NovelDatabase, onReviewAdded: (
                 onDone = {
                     keyboardController?.hide()
                 }
-        )
+            )
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            novelDatabase.addReview(novel, reviewText , usuario)
-            onReviewAdded()
-        }) {
+        Button(
+            onClick = {
+                if (reviewText.isBlank() || usuario.isBlank()) { // Validar ambos campos
+                    showDialog = true
+                } else {
+                    novelDatabase.addReview(novel, reviewText, usuario)
+                    onReviewAdded()
+                }
+            }
+        )  {
             Text("Guardar reseña")
         }
+
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = { Text("Error") },
+                text = { Text("Ningún campo puede estar vacío") },
+                confirmButton = {
+                    TextButton(onClick = { showDialog = false }) {
+                        Text("OK")
+                    }
+                }
+            )
+        }
+
     }
 }
 
@@ -196,7 +242,7 @@ fun NovelDetailsScreen(novel: Novel, novelDatabase: NovelDatabase, onBack: () ->
             CenterAlignedTopAppBar(
                 title = { Text(novel.title) },
 
-            )
+                )
         }
     ) { innerPadding ->
         Column(modifier = Modifier
@@ -204,7 +250,7 @@ fun NovelDetailsScreen(novel: Novel, novelDatabase: NovelDatabase, onBack: () ->
             .padding(16.dp)) {
             Text("Autor: ${novel.author}", style = MaterialTheme.typography.bodyLarge)
             Text("Año: ${novel.year}", style = MaterialTheme.typography.bodyLarge)
-            Text("Sinopsis: ${novel.synopsis}", style = MaterialTheme.typography.bodyMedium)
+            Text("Sinopsis: ${novel.synopsis}", style = MaterialTheme.typography.bodyLarge)
             Spacer(modifier = Modifier.height(16.dp))
             IconButton(onClick = {
                 novelDatabase.toggleFavorite(novel)
@@ -235,11 +281,9 @@ fun FavoritesScreen(novelDatabase: NovelDatabase, onBackToHome: () -> Unit, onNo
     var favoriteNovels by remember { mutableStateOf(novelDatabase.getFavoriteNovels()) }
     var refresh by remember { mutableStateOf(false) }
 
-    Column {
+    Column{
 
-        Button(onClick = onBackToHome) {
-            Text("Volver al inicio")
-        }
+
 
         if (favoriteNovels.isEmpty()) {
             Text("No hay novelas favoritas.")
@@ -249,8 +293,6 @@ fun FavoritesScreen(novelDatabase: NovelDatabase, onBackToHome: () -> Unit, onNo
                     Column(modifier = Modifier.weight(1f)) {
                         Text("Título: ${novel.title}")
                         Text("Autor: ${novel.author}")
-                        Text("Año: ${novel.year}")
-                        Text("Sinopsis: ${novel.synopsis}")
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                     IconButton(onClick = {
@@ -276,13 +318,14 @@ fun FavoritesScreen(novelDatabase: NovelDatabase, onBackToHome: () -> Unit, onNo
 }
 
 @Composable
-fun ViewNovelsScreen(novelDatabase: NovelDatabase, onAddNovelClick: () -> Unit, onNovelClick: (Novel) -> Unit) {
+fun ViewNovelsScreen(novelDatabase: NovelDatabase, onAddNovelClick: () -> Unit, onNovelClick: (Novel) -> Unit, ) {
     val novels by remember { mutableStateOf(novelDatabase.getAllNovels()) }
     var currentNovel: Novel? by remember { mutableStateOf(null) }
     var currentScreen by remember { mutableStateOf(Screen.ViewNovels) }
     var refresh by remember { mutableStateOf(false) }
 
     Column {
+
         Button(onClick = onAddNovelClick) {
             Text("Añadir Novela")
         }
@@ -330,9 +373,9 @@ fun ViewNovelsScreen(novelDatabase: NovelDatabase, onAddNovelClick: () -> Unit, 
         }
 
     }
-        LaunchedEffect(refresh) {
+    LaunchedEffect(refresh) {
 
-        }
+    }
 
 
 }
@@ -342,6 +385,7 @@ fun AddNovelScreen(novelDatabase: NovelDatabase, onNovelAdded: () -> Unit) {
     var title by remember { mutableStateOf("") }
     var author by remember { mutableStateOf("") }
     var year by remember { mutableStateOf("") }
+    var showDialog by remember { mutableStateOf(false) }
     var synopsis by remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
 
@@ -397,12 +441,31 @@ fun AddNovelScreen(novelDatabase: NovelDatabase, onNovelAdded: () -> Unit) {
             )
         )
         Spacer(modifier = Modifier.height(16.dp))
-        Button(onClick = {
-            val novel = Novel(title, author, year.toIntOrNull() ?: 0, synopsis)
-            novelDatabase.addNovel(novel)
-            onNovelAdded()
-        }) {
+        Button(
+            onClick = {
+                if (title.isBlank() || author.isBlank() || year.isBlank() || synopsis.isBlank()) {
+                    showDialog = true
+                } else {
+                    val novel = Novel(title, author, year.toIntOrNull() ?: 0, synopsis)
+                    novelDatabase.addNovel(novel)
+                    onNovelAdded()
+                }
+            }
+        ) {
             Text("Guardar Novela")
+        }
+
+        if (showDialog) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = { Text("Error") },
+                text = { Text("Ningún campo puede estar vacío") },
+                confirmButton = {
+                    TextButton(onClick = { showDialog = false }) {
+                        Text("OK")
+                    }
+                }
+            )
         }
     }
 }
