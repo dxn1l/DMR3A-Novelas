@@ -55,6 +55,7 @@ fun NovelApp() {
                         Screen.AddNovel -> "Añade una novela"
                         Screen.Favorites -> "Favoritos"
                         Screen.NovelDetails -> "Detalles"
+                        Screen.AddReview -> "Añadir reseña"
                     }
                 )
                      },
@@ -88,9 +89,24 @@ fun NovelApp() {
                     currentScreen = Screen.NovelDetails
                 }
                 Screen.AddNovel -> AddNovelScreen(novelDatabase) { currentScreen = Screen.ViewNovels }
-                Screen.Favorites -> FavoritesScreen(novelDatabase) { currentScreen = Screen.ViewNovels }
+                Screen.Favorites -> FavoritesScreen(novelDatabase, onBackToHome = { currentScreen = Screen.ViewNovels }, onNovelClick = { novel ->
+                    currentNovel = novel
+                    currentScreen = Screen.NovelDetails
+                })
                 Screen.NovelDetails -> if (currentNovel != null) {
-                    NovelDetailsScreen(novel = currentNovel!!, novelDatabase = novelDatabase, onBack = { currentScreen = Screen.ViewNovels })
+                    NovelDetailsScreen(
+                        novel = currentNovel!!,
+                        novelDatabase = novelDatabase,
+                        onBack = { currentScreen = Screen.ViewNovels },
+                        onAddReviewClick = { currentScreen = Screen.AddReview } // Añadir onAddReviewClick
+                    )
+                }
+                Screen.AddReview -> if (currentNovel != null) {
+                    AddReviewScreen(
+                        novel = currentNovel!!,
+                        novelDatabase = novelDatabase,
+                        onReviewAdded = { currentScreen = Screen.NovelDetails }
+                    )
                 }
             }
         }
@@ -101,14 +117,49 @@ enum class Screen {
     ViewNovels,
     AddNovel,
     Favorites,
-    NovelDetails
+    NovelDetails,
+    AddReview
 }
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NovelDetailsScreen(novel: Novel, novelDatabase: NovelDatabase, onBack: () -> Unit) {
+fun AddReviewScreen(novel: Novel, novelDatabase: NovelDatabase, onReviewAdded: () -> Unit) {
+    var reviewText by remember { mutableStateOf("") }
+    var usuario by remember { mutableStateOf("") }
+
+
+    Column(modifier = Modifier
+        .fillMaxSize()
+        .padding(16.dp)) {
+        OutlinedTextField(
+            value = usuario, // Añadir un campo para el nombre del autor
+            onValueChange = { usuario = it },
+            label = { Text("Tu nombre") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        OutlinedTextField(
+            value = reviewText,
+            onValueChange = { reviewText = it },
+            label = { Text("Escribe tu reseña") },
+            modifier = Modifier.fillMaxWidth()
+        )
+        Spacer(modifier = Modifier.height(16.dp))
+        Button(onClick = {
+            novelDatabase.addReview(novel, reviewText , usuario)
+            onReviewAdded()
+        }) {
+            Text("Guardar reseña")
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+fun NovelDetailsScreen(novel: Novel, novelDatabase: NovelDatabase, onBack: () -> Unit , onAddReviewClick: () -> Unit) {
     var isFavorite by remember { mutableStateOf(novel.getIsFavorite()) }
+    val reviews by remember { mutableStateOf(novelDatabase.getReviewsForNovel(novel)) }
 
     Scaffold(
         topBar = {
@@ -135,12 +186,22 @@ fun NovelDetailsScreen(novel: Novel, novelDatabase: NovelDatabase, onBack: () ->
                     tint = if (isFavorite) Color.Red else LocalContentColor.current
                 )
             }
+            Button(onClick = onAddReviewClick,
+                modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                Text("Añadir reseña")
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Reseñas:", style = MaterialTheme.typography.headlineSmall)
+            reviews.forEach { review ->
+                Text("${review.usuario}: ${review.reviewText}", style = MaterialTheme.typography.bodyMedium)
+            }
         }
     }
 }
 
 @Composable
-fun FavoritesScreen(novelDatabase: NovelDatabase, onBackToHome: () -> Unit) {
+fun FavoritesScreen(novelDatabase: NovelDatabase, onBackToHome: () -> Unit, onNovelClick: (Novel) -> Unit) {
     var favoriteNovels by remember { mutableStateOf(novelDatabase.getFavoriteNovels()) }
     var refresh by remember { mutableStateOf(false) }
 
@@ -169,6 +230,10 @@ fun FavoritesScreen(novelDatabase: NovelDatabase, onBackToHome: () -> Unit) {
                     }) {
                         Icon(Icons.Filled.Delete, contentDescription = "Eliminar de favoritos")
                     }
+
+                    IconButton(onClick = { onNovelClick(novel) }) {
+                        Icon(Icons.Filled.ArrowForward, contentDescription = "Ver detalles")
+                    }
                 }
                 Spacer(modifier = Modifier.height(8.dp))
             }
@@ -184,6 +249,7 @@ fun FavoritesScreen(novelDatabase: NovelDatabase, onBackToHome: () -> Unit) {
 fun ViewNovelsScreen(novelDatabase: NovelDatabase, onAddNovelClick: () -> Unit, onNovelClick: (Novel) -> Unit) {
     val novels by remember { mutableStateOf(novelDatabase.getAllNovels()) }
     var currentNovel: Novel? by remember { mutableStateOf(null) }
+    var currentScreen by remember { mutableStateOf(Screen.ViewNovels) }
     var refresh by remember { mutableStateOf(false) }
 
     Column {
@@ -227,7 +293,10 @@ fun ViewNovelsScreen(novelDatabase: NovelDatabase, onAddNovelClick: () -> Unit, 
             NovelDetailsScreen(
                 novel = currentNovel!!,
                 novelDatabase = novelDatabase,
-                onBack = { currentNovel = null })
+                onBack = { currentNovel = null },
+                onAddReviewClick = { currentScreen = Screen.AddReview }
+            )
+
         }
 
     }
