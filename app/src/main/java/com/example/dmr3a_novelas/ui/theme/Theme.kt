@@ -1,6 +1,5 @@
-package com.example.dmr3a_feedback1.ui.theme
+package com.example.dmr3a_novelas.ui.theme
 
-import android.app.Activity
 import android.os.Build
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material3.MaterialTheme
@@ -34,7 +33,7 @@ private val LightColorScheme = lightColorScheme(
 )
 
 @Composable
-fun DMR3AFeedback1Theme(
+fun DMR3ANovelasTheme(
     darkTheme: Boolean = isSystemInDarkTheme(),
     // Dynamic color is available on Android 12+
     dynamicColor: Boolean = true,

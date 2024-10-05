@@ -1,4 +1,4 @@
-package com.example.dmr3a_feedback1.ui.Screens
+package com.example.dmr3a_novelas.ui.Screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -25,8 +25,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.dmr3a_feedback1.DataBase.Novel
-import com.example.dmr3a_feedback1.DataBase.NovelDatabase
+import com.example.dmr3a_novelas.DataBase.Novel
+import com.example.dmr3a_novelas.DataBase.NovelDatabase
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

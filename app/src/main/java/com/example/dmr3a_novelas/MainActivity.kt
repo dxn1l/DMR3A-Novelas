@@ -1,9 +1,9 @@
-package com.example.dmr3a_feedback1
+package com.example.dmr3a_novelas
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
-import com.example.dmr3a_feedback1.ui.AppNavegation.NovelApp
+import com.example.dmr3a_novelas.ui.AppNavegation.NovelApp
 
 
 

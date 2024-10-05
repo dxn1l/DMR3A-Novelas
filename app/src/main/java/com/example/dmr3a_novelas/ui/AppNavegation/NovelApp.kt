@@ -1,4 +1,4 @@
-package com.example.dmr3a_feedback1.ui.AppNavegation
+package com.example.dmr3a_novelas.ui.AppNavegation
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
@@ -21,13 +21,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import com.example.dmr3a_feedback1.DataBase.Novel
-import com.example.dmr3a_feedback1.DataBase.NovelDatabase
-import com.example.dmr3a_feedback1.ui.Screens.AddNovelScreen
-import com.example.dmr3a_feedback1.ui.Screens.AddReviewScreen
-import com.example.dmr3a_feedback1.ui.Screens.FavoritesScreen
-import com.example.dmr3a_feedback1.ui.Screens.NovelDetailsScreen
-import com.example.dmr3a_feedback1.ui.Screens.ViewNovelsScreen
+import com.example.dmr3a_novelas.DataBase.Novel
+import com.example.dmr3a_novelas.DataBase.NovelDatabase
+import com.example.dmr3a_novelas.ui.Screens.AddNovelScreen
+import com.example.dmr3a_novelas.ui.Screens.AddReviewScreen
+import com.example.dmr3a_novelas.ui.Screens.FavoritesScreen
+import com.example.dmr3a_novelas.ui.Screens.NovelDetailsScreen
+import com.example.dmr3a_novelas.ui.Screens.ViewNovelsScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

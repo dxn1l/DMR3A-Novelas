@@ -1,4 +1,4 @@
-package com.example.dmr3a_feedback1.ui.theme
+package com.example.dmr3a_novelas.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

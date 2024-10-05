@@ -1,4 +1,4 @@
-package com.example.dmr3a_feedback1.ui.Screens
+package com.example.dmr3a_novelas.ui.Screens
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -22,8 +22,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
-import com.example.dmr3a_feedback1.DataBase.Novel
-import com.example.dmr3a_feedback1.DataBase.NovelDatabase
+import com.example.dmr3a_novelas.DataBase.Novel
+import com.example.dmr3a_novelas.DataBase.NovelDatabase
 
 
 @Composable

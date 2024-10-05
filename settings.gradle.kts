@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "DMR3A-Feedback1"
+rootProject.name = "DMR3A-Novelas"
 include(":app")
  

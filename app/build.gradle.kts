@@ -4,11 +4,11 @@ plugins {
 }
 
 android {
-    namespace = "com.example.dmr3a_feedback1"
+    namespace = "com.example.dmr3a_novelas"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.example.dmr3a_feedback1"
+        applicationId = "com.example.dmr3a_novelas"
         minSdk = 24
         targetSdk = 34
         versionCode = 1

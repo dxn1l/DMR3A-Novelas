@@ -1,4 +1,4 @@
-package com.example.dmr3a_feedback1
+package com.example.dmr3a_novelas
 
 import org.junit.Test
 

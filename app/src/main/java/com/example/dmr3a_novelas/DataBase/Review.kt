@@ -1,4 +1,4 @@
-package com.example.dmr3a_feedback1.DataBase
+package com.example.dmr3a_novelas.DataBase
 
 data class Review(
     val novelId: Int,
