@@ -1,5 +1,6 @@
 package com.example.dmr3a_novelas.ui.Screens
 
+
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -23,11 +24,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
 import com.example.dmr3a_novelas.DataBase.Novel
-import com.example.dmr3a_novelas.DataBase.NovelDatabase
 
 @Composable
-fun AddNovelScreen(novelDatabase: NovelDatabase, onNovelAdded: () -> Unit) {
+fun AddNovelScreen(novelRepository: FirebaseNovelRepository, onNovelAdded: () -> Unit) {
     var title by remember { mutableStateOf("") }
     var author by remember { mutableStateOf("") }
     var year by remember { mutableStateOf("") }
@@ -92,8 +93,8 @@ fun AddNovelScreen(novelDatabase: NovelDatabase, onNovelAdded: () -> Unit) {
                 if (title.isBlank() || author.isBlank() || year.isBlank() || synopsis.isBlank()) {
                     showDialog = true
                 } else {
-                    val novel = Novel(title, author, year.toIntOrNull() ?: 0, synopsis)
-                    novelDatabase.addNovel(novel)
+                    val novel = Novel(id= null, title, author, year.toIntOrNull() ?: 0, synopsis)
+                    novelRepository.addNovel(novel)
                     onNovelAdded()
                 }
             }

@@ -1,10 +1,11 @@
 package com.example.dmr3a_novelas.DataBase
 
 data class Novel(
-    val title: String,
-    val author: String,
-    val year: Int,
-    val synopsis: String,
+    var id: String? = null,
+    val title: String = "",
+    val author: String = "",
+    val year: Int = 0,
+    val synopsis: String = "",
     var _isFavorite: Boolean = false
 
 ) {
@@ -12,5 +13,7 @@ data class Novel(
     fun getIsFavorite(): Boolean = _isFavorite
     fun setFavorite(favorite: Boolean) { _isFavorite = favorite }
 
+
+    constructor() : this(null, "", "", 0, "", false)
 
 }

@@ -22,12 +22,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
 import com.example.dmr3a_novelas.DataBase.Novel
-import com.example.dmr3a_novelas.DataBase.NovelDatabase
 
 
 @Composable
-fun AddReviewScreen(novel: Novel, novelDatabase: NovelDatabase, onReviewAdded: () -> Unit, onBackToDetails: () -> Unit) {
+fun AddReviewScreen(novel: Novel, novelRepository: FirebaseNovelRepository, onReviewAdded: () -> Unit, onBackToDetails: () -> Unit) {
     var reviewText by remember { mutableStateOf("") }
     var usuario by remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
@@ -76,7 +76,7 @@ fun AddReviewScreen(novel: Novel, novelDatabase: NovelDatabase, onReviewAdded: (
                 if (reviewText.isBlank() || usuario.isBlank()) { // Validar ambos campos
                     showDialog = true
                 } else {
-                    novelDatabase.addReview(novel, reviewText, usuario)
+                    novelRepository.addReview(novel, reviewText, usuario)
                     onReviewAdded()
                 }
             }

@@ -21,8 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
 import com.example.dmr3a_novelas.DataBase.Novel
-import com.example.dmr3a_novelas.DataBase.NovelDatabase
 import com.example.dmr3a_novelas.ui.Screens.AddNovelScreen
 import com.example.dmr3a_novelas.ui.Screens.AddReviewScreen
 import com.example.dmr3a_novelas.ui.Screens.FavoritesScreen
@@ -32,7 +32,7 @@ import com.example.dmr3a_novelas.ui.Screens.ViewNovelsScreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NovelApp() {
-    val novelDatabase = remember { NovelDatabase.getInstance() }
+    val novelRepository = remember { FirebaseNovelRepository()}
     var currentNovel by remember { mutableStateOf<Novel?>(null) }
     var currentScreen by remember { mutableStateOf(Screen.ViewNovels) }
 
@@ -96,19 +96,19 @@ fun NovelApp() {
         ) { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
                 when (currentScreen) {
-                    Screen.ViewNovels -> ViewNovelsScreen(novelDatabase, onAddNovelClick = { currentScreen = Screen.AddNovel }) { novel ->
+                    Screen.ViewNovels -> ViewNovelsScreen(novelRepository, onAddNovelClick = { currentScreen = Screen.AddNovel }) { novel ->
                         currentNovel = novel
                         currentScreen = Screen.NovelDetails
                     }
-                    Screen.AddNovel -> AddNovelScreen(novelDatabase) { currentScreen = Screen.ViewNovels }
-                    Screen.Favorites -> FavoritesScreen(novelDatabase, onBackToHome = { currentScreen = Screen.ViewNovels }, onNovelClick = { novel ->
+                    Screen.AddNovel -> AddNovelScreen(novelRepository) { currentScreen = Screen.ViewNovels }
+                    Screen.Favorites -> FavoritesScreen(novelRepository, onBackToHome = { currentScreen = Screen.ViewNovels }, onNovelClick = { novel ->
                         currentNovel = novel
                         currentScreen = Screen.NovelDetails
                     })
                     Screen.NovelDetails -> if (currentNovel != null) {
                         NovelDetailsScreen(
                             novel = currentNovel!!,
-                            novelDatabase = novelDatabase,
+                            novelRepository = novelRepository,
                             onBack = { currentScreen = Screen.ViewNovels },
                             onAddReviewClick = { currentScreen = Screen.AddReview } // Añadir onAddReviewClick
                         )
@@ -116,7 +116,7 @@ fun NovelApp() {
                     Screen.AddReview -> if (currentNovel != null) {
                         AddReviewScreen(
                             novel = currentNovel!!,
-                            novelDatabase = novelDatabase,
+                            novelRepository = novelRepository,
                             onReviewAdded = { currentScreen = Screen.NovelDetails },
                             onBackToDetails = { currentScreen = Screen.NovelDetails }
 

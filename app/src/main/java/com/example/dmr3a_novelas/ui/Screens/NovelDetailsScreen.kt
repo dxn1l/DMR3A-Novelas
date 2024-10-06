@@ -17,6 +17,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -25,14 +26,21 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
 import com.example.dmr3a_novelas.DataBase.Novel
-import com.example.dmr3a_novelas.DataBase.NovelDatabase
+import com.example.dmr3a_novelas.DataBase.Review
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NovelDetailsScreen(novel: Novel, novelDatabase: NovelDatabase, onBack: () -> Unit, onAddReviewClick: () -> Unit) {
+fun NovelDetailsScreen(novel: Novel, novelRepository: FirebaseNovelRepository, onBack: () -> Unit, onAddReviewClick: () -> Unit) {
     var isFavorite by remember { mutableStateOf(novel.getIsFavorite()) }
-    val reviews by remember { mutableStateOf(novelDatabase.getReviewsForNovel(novel)) }
+    var reviews by remember { mutableStateOf<List<Review>>(emptyList()) }
+
+    LaunchedEffect(novel) {
+        novelRepository.getReviewsForNovel(novel) { reviewsList ->
+            reviews = reviewsList }
+    }
+
 
     Scaffold(
         topBar = {
@@ -50,7 +58,7 @@ fun NovelDetailsScreen(novel: Novel, novelDatabase: NovelDatabase, onBack: () ->
             Text("Sinopsis: ${novel.synopsis}", style = MaterialTheme.typography.bodyLarge)
             Spacer(modifier = Modifier.height(16.dp))
             IconButton(onClick = {
-                novelDatabase.toggleFavorite(novel)
+                novelRepository.toggleFavorite(novel)
                 isFavorite = !isFavorite
             }) {
                 Icon(
@@ -66,8 +74,14 @@ fun NovelDetailsScreen(novel: Novel, novelDatabase: NovelDatabase, onBack: () ->
 
             Spacer(modifier = Modifier.height(16.dp))
             Text("Reseñas:", style = MaterialTheme.typography.headlineSmall)
-            reviews.forEach { review ->
-                Text("${review.usuario}: ${review.reviewText}", style = MaterialTheme.typography.bodyMedium)
+
+            if (reviews.isNotEmpty()) {
+                reviews.forEach { review ->
+                    Text("${review.usuario}: ${review.reviewText}", style = MaterialTheme.typography.bodyMedium)
+                }
+            } else {
+                // Display a loading indicator or message while reviews are loading
+                Text("Cargando reseñas...")
             }
         }
     }

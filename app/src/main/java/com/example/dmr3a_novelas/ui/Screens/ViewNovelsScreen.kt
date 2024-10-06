@@ -24,16 +24,20 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
 import com.example.dmr3a_novelas.DataBase.Novel
-import com.example.dmr3a_novelas.DataBase.NovelDatabase
 import com.example.dmr3a_novelas.ui.AppNavegation.Screen
 
 @Composable
-fun ViewNovelsScreen(novelDatabase: NovelDatabase, onAddNovelClick: () -> Unit, onNovelClick: (Novel) -> Unit, ) {
-    val novels by remember { mutableStateOf(novelDatabase.getAllNovels()) }
+fun ViewNovelsScreen(novelRepository: FirebaseNovelRepository, onAddNovelClick: () -> Unit, onNovelClick: (Novel) -> Unit) {
+    var novels by remember { mutableStateOf<List<Novel>>(emptyList()) }
     var currentNovel: Novel? by remember { mutableStateOf(null) }
     var currentScreen by remember { mutableStateOf(Screen.ViewNovels) }
     var refresh by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        novelRepository.getAllNovels { novels = it }
+    }
 
     Column {
 
@@ -49,7 +53,7 @@ fun ViewNovelsScreen(novelDatabase: NovelDatabase, onAddNovelClick: () -> Unit, 
                         Text("Autor: ${novel.author}")
                     }
                     IconButton(onClick = {
-                        novelDatabase.toggleFavorite(novel)
+                        novelRepository.toggleFavorite(novel)
                         refresh = !refresh
                     }) {
                         Icon(
@@ -59,7 +63,7 @@ fun ViewNovelsScreen(novelDatabase: NovelDatabase, onAddNovelClick: () -> Unit, 
                         )
                     }
                     IconButton(onClick = {
-                        novelDatabase.removeNovel(novel)
+                        novelRepository.removeNovel(novel)
                         refresh = !refresh
                     }) {
                         Icon(Icons.Filled.Delete, contentDescription = "Eliminar")
@@ -76,7 +80,7 @@ fun ViewNovelsScreen(novelDatabase: NovelDatabase, onAddNovelClick: () -> Unit, 
         if (currentNovel != null) {
             NovelDetailsScreen(
                 novel = currentNovel!!,
-                novelDatabase = novelDatabase,
+                novelRepository = novelRepository,
                 onBack = { currentNovel = null },
                 onAddReviewClick = { currentScreen = Screen.AddReview }
             )

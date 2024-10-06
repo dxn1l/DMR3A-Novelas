@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "189270381283",
+    "firebase_url": "https://novelas-6bf94-default-rtdb.firebaseio.com",
+    "project_id": "novelas-6bf94",
+    "storage_bucket": "novelas-6bf94.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:189270381283:android:3e43b29344c3a38e6babd6",
+        "android_client_info": {
+          "package_name": "com.example.dmr3a_novelas"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCb1fSTFcfCc4uxUtwN7MSPFad4zyDaygs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

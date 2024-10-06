@@ -19,14 +19,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
 import com.example.dmr3a_novelas.DataBase.Novel
-import com.example.dmr3a_novelas.DataBase.NovelDatabase
 
 
 @Composable
-fun FavoritesScreen(novelDatabase: NovelDatabase, onBackToHome: () -> Unit, onNovelClick: (Novel) -> Unit) {
-    var favoriteNovels by remember { mutableStateOf(novelDatabase.getFavoriteNovels()) }
+fun FavoritesScreen(novelRepository: FirebaseNovelRepository, onBackToHome: () -> Unit, onNovelClick: (Novel) -> Unit) {
+    var favoriteNovels by remember { mutableStateOf<List<Novel>>(emptyList()) }
     var refresh by remember { mutableStateOf(false) }
+
+    LaunchedEffect(Unit) {
+        novelRepository.getFavoriteNovels { favoriteNovels = it }
+    }
 
     Column{
 
@@ -43,8 +47,7 @@ fun FavoritesScreen(novelDatabase: NovelDatabase, onBackToHome: () -> Unit, onNo
                         Spacer(modifier = Modifier.height(8.dp))
                     }
                     IconButton(onClick = {
-                        novelDatabase.toggleFavorite(novel)
-                        favoriteNovels = novelDatabase.getFavoriteNovels()
+                        novelRepository.toggleFavorite(novel)
                         refresh = !refresh
                     }) {
                         Icon(Icons.Filled.Delete, contentDescription = "Eliminar de favoritos")
