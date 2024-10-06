@@ -1,4 +1,4 @@
-# Novelas
+# Novela
 
 ## Descripción
 
