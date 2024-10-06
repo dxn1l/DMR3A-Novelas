@@ -66,7 +66,7 @@ fun ViewNovelsScreen(novelRepository: FirebaseNovelRepository, onAddNovelClick: 
                         novelRepository.removeNovel(novel)
                         refresh = !refresh
                     }) {
-                        Icon(Icons.Filled.Delete, contentDescription = "Eliminar")
+                        Icon(Icons.Filled.Delete, contentDescription = "Elimina")
                     }
                     IconButton(onClick = { onNovelClick(novel) }) {
                         Icon(Icons.Filled.ArrowForward, contentDescription = "Ver detalles")
