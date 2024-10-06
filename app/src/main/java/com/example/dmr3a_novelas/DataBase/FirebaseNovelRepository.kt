@@ -25,8 +25,7 @@ class FirebaseNovelRepository {
     }
 
     fun addNovel(novel: Novel) {
-        val newNovelRef = database.child("novels").push()
-        novel.id = newNovelRef.key
+        val newNovelRef = database.child("novels").child(novel.id!!)
         newNovelRef.setValue(novel)
     }
 

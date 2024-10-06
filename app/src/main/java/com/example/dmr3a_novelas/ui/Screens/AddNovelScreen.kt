@@ -29,6 +29,8 @@ import com.example.dmr3a_novelas.DataBase.Novel
 
 @Composable
 fun AddNovelScreen(novelRepository: FirebaseNovelRepository, onNovelAdded: () -> Unit) {
+
+    var id by remember { mutableStateOf("") }
     var title by remember { mutableStateOf("") }
     var author by remember { mutableStateOf("") }
     var year by remember { mutableStateOf("") }
@@ -43,6 +45,17 @@ fun AddNovelScreen(novelRepository: FirebaseNovelRepository, onNovelAdded: () ->
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
     ) {
+        OutlinedTextField(
+            value = id,
+            onValueChange = { id = it },
+            label = { Text("ID") },
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+                }
+            )
+        )
         OutlinedTextField(
             value = title,
             onValueChange = { title = it },
@@ -90,10 +103,10 @@ fun AddNovelScreen(novelRepository: FirebaseNovelRepository, onNovelAdded: () ->
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                if (title.isBlank() || author.isBlank() || year.isBlank() || synopsis.isBlank()) {
+                if (id.isBlank() || title.isBlank() || author.isBlank() || year.isBlank() || synopsis.isBlank()) {
                     showDialog = true
                 } else {
-                    val novel = Novel(id= null, title, author, year.toIntOrNull() ?: 0, synopsis)
+                    val novel = Novel(id= id, title, author, year.toIntOrNull() ?: 0, synopsis)
                     novelRepository.addNovel(novel)
                     onNovelAdded()
                 }

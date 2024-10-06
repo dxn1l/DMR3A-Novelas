@@ -1,7 +1,7 @@
 package com.example.dmr3a_novelas.DataBase
 
 data class Novel(
-    var id: String? = null,
+    var id: String? = "",
     val title: String = "",
     val author: String = "",
     val year: Int = 0,
