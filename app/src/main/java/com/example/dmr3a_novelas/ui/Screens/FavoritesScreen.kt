@@ -1,5 +1,6 @@
 package com.example.dmr3a_novelas.ui.Screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -29,7 +30,12 @@ fun FavoritesScreen(novelRepository: FirebaseNovelRepository, onBackToHome: () -
     var refresh by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        novelRepository.getFavoriteNovels { favoriteNovels = it }
+        novelRepository.getFavoriteNovels(
+            onResult = { favoriteNovels = it },
+            onError = { error ->
+                Log.e("Error", "Error al obtener las novelas favoritas: ${error.message}")
+            }
+        )
     }
 
     Column{

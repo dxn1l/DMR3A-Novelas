@@ -1,5 +1,6 @@
 package com.example.dmr3a_novelas.ui.Screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
@@ -7,6 +8,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -14,8 +16,10 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -36,9 +40,17 @@ fun NovelDetailsScreen(novel: Novel, novelRepository: FirebaseNovelRepository, o
     var isFavorite by remember { mutableStateOf(novel.getIsFavorite()) }
     var reviews by remember { mutableStateOf<List<Review>>(emptyList()) }
 
+
     LaunchedEffect(novel) {
-        novelRepository.getReviewsForNovel(novel) { reviewsList ->
-            reviews = reviewsList }
+        novelRepository.getReviewsForNovel(
+            novel,
+            onResult = { reviewsList ->
+                reviews = reviewsList
+            },
+            onError = { error ->
+                Log.e("Error", "Error al obtener las reseñas para la novela: ${error.message}")
+            }
+        )
     }
 
 
@@ -83,6 +95,9 @@ fun NovelDetailsScreen(novel: Novel, novelRepository: FirebaseNovelRepository, o
                 // Display a loading indicator or message while reviews are loading
                 Text("Cargando reseñas...")
             }
+
         }
     }
 }
+
+

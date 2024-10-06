@@ -1,5 +1,6 @@
 package com.example.dmr3a_novelas.ui.Screens
 
+import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -7,8 +8,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Delete
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -36,8 +39,17 @@ fun ViewNovelsScreen(novelRepository: FirebaseNovelRepository, onAddNovelClick: 
     var refresh by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
-        novelRepository.getAllNovels { novels = it }
+        novelRepository.getAllNovels(
+            onResult = { novelsList ->
+                novels = novelsList
+            },
+            onError = { error ->
+                Log.e("Error", "Error al obtener las novelas: ${error.message}")
+
+            }
+        )
     }
+
 
     Column {
 
@@ -47,11 +59,29 @@ fun ViewNovelsScreen(novelRepository: FirebaseNovelRepository, onAddNovelClick: 
 
         novels.mapIndexed { index, novel ->
             key(novel.title) {
+                var showDialog by remember { mutableStateOf(false) }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text("Título: ${novel.title}")
                         Text("Autor: ${novel.author}")
                     }
+                    IconButton(onClick = {
+                        showDialog=true
+
+                    }) {
+                        Icon(Icons.Filled.Edit, contentDescription = "Editar")
+                    }
+
+                    if (showDialog) {
+                        EditNovelDialog(
+                            novel = novel,
+                            onDismissRequest = { showDialog = false },
+                            onEditNovel = { updatedNovel ->
+                                novelRepository.updateNovel(updatedNovel)
+                            },
+                        )
+                    }
+
                     IconButton(onClick = {
                         novelRepository.toggleFavorite(novel)
                         refresh = !refresh
@@ -94,3 +124,6 @@ fun ViewNovelsScreen(novelRepository: FirebaseNovelRepository, onAddNovelClick: 
 
 
 }
+
+
+

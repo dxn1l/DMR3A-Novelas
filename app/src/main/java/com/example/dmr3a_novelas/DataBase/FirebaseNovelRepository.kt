@@ -10,7 +10,7 @@ import kotlin.collections.mapNotNull
 class FirebaseNovelRepository {
     private val database = FirebaseDatabase.getInstance().reference
 
-    fun getAllNovels(onResult: (List<Novel>) -> Unit) {
+    fun getAllNovels(onResult: (List<Novel>) -> Unit, onError: (DatabaseError) -> Unit) {
         database.child("novels").addValueEventListener(object :
             ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
@@ -19,7 +19,7 @@ class FirebaseNovelRepository {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Manejar error
+                onError(error)
             }
         })
     }
@@ -35,7 +35,7 @@ class FirebaseNovelRepository {
         }
     }
 
-    fun getFavoriteNovels(onResult: (List<Novel>) -> Unit) {
+    fun getFavoriteNovels(onResult: (List<Novel>) -> Unit, onError: (DatabaseError) -> Unit) {
         database.child("novels").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val favoriteNovels = snapshot.children.mapNotNull { it.getValue(Novel::class.java) }
@@ -44,7 +44,7 @@ class FirebaseNovelRepository {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Handle error
+                onError(error)
             }
         })
     }
@@ -61,7 +61,7 @@ class FirebaseNovelRepository {
         newReviewRef.setValue(review)
     }
 
-    fun getReviewsForNovel(novel: Novel, onResult: (List<Review>) -> Unit) {
+    fun getReviewsForNovel(novel: Novel, onResult: (List<Review>) -> Unit, onError: (DatabaseError) -> Unit) {
         database.child("reviews").addValueEventListener(object : ValueEventListener {
             override fun onDataChange(snapshot: DataSnapshot) {
                 val reviews = snapshot.children.mapNotNull { it.getValue(Review::class.java) }
@@ -70,8 +70,15 @@ class FirebaseNovelRepository {
             }
 
             override fun onCancelled(error: DatabaseError) {
-                // Handle error
+                onError(error)
             }
         })
     }
+
+    fun updateNovel(novel: Novel) {
+        val novelRef = database.child("novels").child(novel.id!!)
+        novelRef.setValue(novel)
+    }
+
+
 }
