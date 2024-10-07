@@ -102,7 +102,7 @@ fun NovelApp() {
                         currentScreen = Screen.NovelDetails
                     }
                     Screen.AddNovel -> AddNovelScreen(novelRepository) { currentScreen = Screen.ViewNovels }
-                    Screen.Favorites -> FavoritesScreen(novelRepository, onBackToHome = { currentScreen = Screen.ViewNovels }, onNovelClick = { novel ->
+                    Screen.Favorites -> FavoritesScreen(novelRepository, onNovelClick = { novel ->
                         currentNovel = novel
                         currentScreen = Screen.NovelDetails
                     })
@@ -110,11 +110,17 @@ fun NovelApp() {
                         NovelDetailsScreen(
                             novel = currentNovel!!,
                             novelRepository = novelRepository,
-                            onBack = { currentScreen = Screen.ViewNovels },
                             onAddReviewClick = { currentScreen = Screen.AddReview } ,
                             onEditNovel = { updatedNovel ->
                                 novelRepository.updateNovel(updatedNovel)
+                            },
+                            onDeleteReviewClick = { review ->
+                                novelRepository.deleteReview(review,
+                                    onSuccess = { /* Manejo de éxito (por ejemplo, mostrar un mensaje) */ },
+                                    onError = { error -> /* Manejo de error (por ejemplo, mostrar un mensaje de error) */ }
+                                )
                             }
+
                         )
                     }
                     Screen.AddReview -> if (currentNovel != null) {
@@ -122,8 +128,6 @@ fun NovelApp() {
                             novel = currentNovel!!,
                             novelRepository = novelRepository,
                             onReviewAdded = { currentScreen = Screen.NovelDetails },
-                            onBackToDetails = { currentScreen = Screen.NovelDetails }
-
                         )
                     }
                 }

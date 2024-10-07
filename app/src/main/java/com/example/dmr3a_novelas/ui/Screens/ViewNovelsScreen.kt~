@@ -11,7 +11,6 @@ import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -115,6 +114,18 @@ fun ViewNovelsScreen(novelRepository: FirebaseNovelRepository, onAddNovelClick: 
                 onAddReviewClick = { currentScreen = Screen.AddReview },
                 onEditNovel = { updatedNovel ->
                     novelRepository.updateNovel(updatedNovel)
+                },
+                onEditReviewClick = { review ->
+                    novelRepository.updateReview(review,
+                        onSuccess = { /* Manejo de éxito (por ejemplo, mostrar un mensaje) */ },
+                        onError = { error -> /* Manejo de error (por ejemplo, mostrar un mensaje de error) */ }
+                    )
+                },
+                onDeleteReviewClick = { review ->
+                    novelRepository.deleteReview(review,
+                        onSuccess = { /* Manejo de éxito (por ejemplo, mostrar un mensaje) */ },
+                        onError = { error -> /* Manejo de error (por ejemplo, mostrar un mensaje de error) */ }
+                    )
                 }
             )
 

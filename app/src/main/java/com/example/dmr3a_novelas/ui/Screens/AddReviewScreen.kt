@@ -27,21 +27,36 @@ import com.example.dmr3a_novelas.DataBase.Novel
 
 
 @Composable
-fun AddReviewScreen(novel: Novel, novelRepository: FirebaseNovelRepository, onReviewAdded: () -> Unit, onBackToDetails: () -> Unit) {
+fun AddReviewScreen(novel: Novel,
+                    novelRepository: FirebaseNovelRepository,
+                    onReviewAdded: () -> Unit) {
+
+    var id by remember { mutableStateOf("") }
     var reviewText by remember { mutableStateOf("") }
     var usuario by remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
     var showDialog by remember { mutableStateOf(false) }
-
-
-
-
-
+    var showIdExistsDialog by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)) {
 
+        OutlinedTextField(
+            value = id,
+            onValueChange = { id = it },
+            label = { Text("ID") },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+
+                }
+
+        )
+                    )
+        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = usuario,
@@ -73,11 +88,18 @@ fun AddReviewScreen(novel: Novel, novelRepository: FirebaseNovelRepository, onRe
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                if (reviewText.isBlank() || usuario.isBlank()) { // Validar ambos campos
+                if (id.isBlank() || reviewText.isBlank() || usuario.isBlank()) {
                     showDialog = true
-                } else {
-                    novelRepository.addReview(novel, reviewText, usuario)
-                    onReviewAdded()
+                }else{
+                    novelRepository.checkIdExists(id) { exists ->
+
+                        if (exists) {
+                            showIdExistsDialog = true
+                        } else {
+                            novelRepository.addReview(id, novel, reviewText, usuario)
+                            onReviewAdded()
+                        }
+                    }
                 }
             }
         )  {
@@ -91,6 +113,20 @@ fun AddReviewScreen(novel: Novel, novelRepository: FirebaseNovelRepository, onRe
                 text = { Text("Ningún campo puede estar vacío") },
                 confirmButton = {
                     TextButton(onClick = { showDialog = false }) {
+                        Text("OK")
+                    }
+                }
+            )
+        }
+
+
+        if (showIdExistsDialog) {
+            AlertDialog(
+                onDismissRequest = { showIdExistsDialog = false },
+                title = { Text("Error") },
+                text = { Text("Este ID ya está en propiedad") },
+                confirmButton = {
+                    TextButton(onClick = { showIdExistsDialog = false }) {
                         Text("OK")
                     }
                 }

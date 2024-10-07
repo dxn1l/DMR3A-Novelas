@@ -55,10 +55,9 @@ class FirebaseNovelRepository {
         }
     }
 
-    fun addReview(novel: Novel, reviewText: String, usuario: String) {
-        val newReviewRef = database.child("reviews").push()
-        val review = Review(newReviewRef.key, novel.id!!, reviewText, usuario)
-        newReviewRef.setValue(review)
+    fun addReview(id: String, novel: Novel, reviewText: String, usuario: String) {
+        val review = Review(id, novel.id!!, reviewText, usuario)
+        database.child("reviews").child(id).setValue(review)
     }
 
     fun getReviewsForNovel(novel: Novel, onResult: (List<Review>) -> Unit, onError: (DatabaseError) -> Unit) {
@@ -95,6 +94,33 @@ class FirebaseNovelRepository {
                 onError(error)
             }
         })
+    }
+
+
+    fun updateReview(review: Review, onSuccess: () -> Unit, onError: (DatabaseError) -> Unit) {
+        val reviewRef = database.child("reviews").child(review.id!!)
+        reviewRef.setValue(review)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { error -> onError(DatabaseError.fromException(error)) }
+    }
+
+
+    fun deleteReview(review: Review, onSuccess: () -> Unit, onError: (DatabaseError) -> Unit) {
+        val reviewRef = database.child("reviews").child(review.id!!)
+        reviewRef.removeValue()
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { error -> onError(DatabaseError.fromException(error)) }
+    }
+
+    fun checkIdExists(id: String, callback: (Boolean) -> Unit) {
+        database.child("reviews").child(id).get().addOnCompleteListener { task ->
+            if (task.isSuccessful) {
+                val review = task.result.value
+                callback(review != null)
+            } else {
+                callback(false)
+            }
+        }
     }
 
 

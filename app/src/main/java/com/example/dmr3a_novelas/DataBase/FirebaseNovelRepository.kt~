@@ -55,10 +55,9 @@ class FirebaseNovelRepository {
         }
     }
 
-    fun addReview(novel: Novel, reviewText: String, usuario: String) {
-        val newReviewRef = database.child("reviews").push()
-        val review = Review(newReviewRef.key, novel.id!!, reviewText, usuario)
-        newReviewRef.setValue(review)
+    fun addReview(id: String, novel: Novel, reviewText: String, usuario: String) {
+        val review = Review(id, novel.id!!, reviewText, usuario)
+        database.child("reviews").child(id).setValue(review)
     }
 
     fun getReviewsForNovel(novel: Novel, onResult: (List<Review>) -> Unit, onError: (DatabaseError) -> Unit) {
@@ -78,6 +77,39 @@ class FirebaseNovelRepository {
     fun updateNovel(novel: Novel) {
         val novelRef = database.child("novels").child(novel.id!!)
         novelRef.setValue(novel)
+    }
+
+    fun getNovelById(id: String, onResult: (Novel) -> Unit, onError: (DatabaseError) -> Unit) {
+        database.child("novels").child(id).addListenerForSingleValueEvent(object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val novel = snapshot.getValue(Novel::class.java)
+                if (novel != null) {
+                    onResult(novel)
+                } else {
+                    onError(DatabaseError.fromException(Exception("No se encontró la novela con ID: $id")))
+                }
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                onError(error)
+            }
+        })
+    }
+
+
+    fun updateReview(review: Review, onSuccess: () -> Unit, onError: (DatabaseError) -> Unit) {
+        val reviewRef = database.child("reviews").child(review.id!!)
+        reviewRef.setValue(review)
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { error -> onError(DatabaseError.fromException(error)) }
+    }
+
+
+    fun deleteReview(review: Review, onSuccess: () -> Unit, onError: (DatabaseError) -> Unit) {
+        val reviewRef = database.child("reviews").child(review.id!!)
+        reviewRef.removeValue()
+            .addOnSuccessListener { onSuccess() }
+            .addOnFailureListener { error -> onError(DatabaseError.fromException(error)) }
     }
 
 

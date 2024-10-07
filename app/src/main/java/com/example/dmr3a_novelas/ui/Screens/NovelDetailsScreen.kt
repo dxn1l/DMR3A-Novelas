@@ -35,14 +35,15 @@ import androidx.compose.ui.unit.dp
 import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
 import com.example.dmr3a_novelas.DataBase.Novel
 import com.example.dmr3a_novelas.DataBase.Review
+import com.example.dmr3a_novelas.ui.Reviews.ReviewsList
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NovelDetailsScreen(novel: Novel,
                        novelRepository: FirebaseNovelRepository,
-                       onBack: () -> Unit,
                        onAddReviewClick: () -> Unit,
-                       onEditNovel: (Novel) -> Unit) {
+                       onEditNovel: (Novel) -> Unit,
+                       onDeleteReviewClick: (Review) -> Unit) {
     var isFavorite by remember { mutableStateOf(novel.getIsFavorite()) }
     var reviews by remember { mutableStateOf<List<Review>>(emptyList()) }
     var refresh by remember { mutableStateOf(false) }
@@ -128,12 +129,18 @@ fun NovelDetailsScreen(novel: Novel,
             Text("Reseñas:", style = MaterialTheme.typography.headlineSmall)
 
             if (reviews.isNotEmpty()) {
-                reviews.forEach { review ->
-                    Text("${review.usuario}: ${review.reviewText}", style = MaterialTheme.typography.bodyMedium)
-                }
+
+
+                    ReviewsList(
+                        reviews = reviews,
+                        onDeleteClick = onDeleteReviewClick
+                    )
+
             } else {
                 Text("Cargando reseñas...")
             }
+
+
 
         }
     }

@@ -110,10 +110,15 @@ fun ViewNovelsScreen(novelRepository: FirebaseNovelRepository, onAddNovelClick: 
             NovelDetailsScreen(
                 novel = currentNovel!!,
                 novelRepository = novelRepository,
-                onBack = { currentNovel = null },
                 onAddReviewClick = { currentScreen = Screen.AddReview },
                 onEditNovel = { updatedNovel ->
                     novelRepository.updateNovel(updatedNovel)
+                },
+                onDeleteReviewClick = { review ->
+                    novelRepository.deleteReview(review,
+                        onSuccess = { /* Manejo de éxito (por ejemplo, mostrar un mensaje) */ },
+                        onError = { error -> /* Manejo de error (por ejemplo, mostrar un mensaje de error) */ }
+                    )
                 }
             )
 

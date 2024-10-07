@@ -26,7 +26,7 @@ import com.example.dmr3a_novelas.DataBase.Novel
 
 
 @Composable
-fun FavoritesScreen(novelRepository: FirebaseNovelRepository, onBackToHome: () -> Unit, onNovelClick: (Novel) -> Unit) {
+fun FavoritesScreen(novelRepository: FirebaseNovelRepository,onNovelClick: (Novel) -> Unit) {
     var favoriteNovels by remember { mutableStateOf<List<Novel>>(emptyList()) }
     var refresh by remember { mutableStateOf(false) }
 
