@@ -80,23 +80,6 @@ class FirebaseNovelRepository {
         novelRef.setValue(novel)
     }
 
-    fun getNovelById(id: String, onResult: (Novel) -> Unit, onError: (DatabaseError) -> Unit) {
-        database.child("novels").child(id).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val novel = snapshot.getValue(Novel::class.java)
-                if (novel != null) {
-                    onResult(novel)
-                } else {
-                    onError(DatabaseError.fromException(Exception("No se encontró la novela con ID: $id")))
-                }
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                onError(error)
-            }
-        })
-    }
-
 
 
 }

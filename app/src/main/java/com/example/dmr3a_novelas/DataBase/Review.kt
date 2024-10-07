@@ -7,7 +7,6 @@ data class Review(
     val usuario: String = ""
     ){
 
-
     constructor() : this(null, "", "", "")
 
 }

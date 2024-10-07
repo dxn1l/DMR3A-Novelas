@@ -8,7 +8,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Delete
-import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -47,28 +46,11 @@ fun FavoritesScreen(novelRepository: FirebaseNovelRepository, onBackToHome: () -
             Text("No hay novelas favoritas.")
         } else {
             favoriteNovels.forEach { novel ->
-                var showDialog by remember { mutableStateOf(false) }
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Column(modifier = Modifier.weight(1f)) {
                         Text("Título: ${novel.title}")
                         Text("Autor: ${novel.author}")
                         Spacer(modifier = Modifier.height(8.dp))
-                    }
-                    IconButton(onClick = {
-                        showDialog=true
-
-                    }) {
-                        Icon(Icons.Filled.Edit, contentDescription = "Editar")
-                    }
-
-                    if (showDialog) {
-                        EditNovelDialog(
-                            novel = novel,
-                            onDismissRequest = { showDialog = false },
-                            onEditNovel = { updatedNovel ->
-                                novelRepository.updateNovel(updatedNovel)
-                            },
-                        )
                     }
                     IconButton(onClick = {
                         novelRepository.toggleFavorite(novel)

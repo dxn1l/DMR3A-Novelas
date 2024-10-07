@@ -12,6 +12,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import com.example.dmr3a_novelas.DataBase.Novel
 
+
 @Composable
 fun EditNovelDialog(
     novel: Novel,
@@ -75,9 +76,11 @@ fun EditNovelDialog(
                         title = title,
                         author = author,
                         year = year.toInt(),
-                        synopsis = synopsis
+                        synopsis = synopsis,
+                        _isFavorite = novel.getIsFavorite()
                     )
                     onEditNovel(updatedNovel)
+                    onDismissRequest()
                 }
             ) {
                 Text("Guardar cambios")

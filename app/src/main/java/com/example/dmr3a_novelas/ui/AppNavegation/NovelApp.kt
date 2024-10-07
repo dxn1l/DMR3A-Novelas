@@ -32,6 +32,7 @@ import com.example.dmr3a_novelas.ui.Screens.ViewNovelsScreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NovelApp() {
+
     val novelRepository = remember { FirebaseNovelRepository()}
     var currentNovel by remember { mutableStateOf<Novel?>(null) }
     var currentScreen by remember { mutableStateOf(Screen.ViewNovels) }
@@ -56,6 +57,7 @@ fun NovelApp() {
                         }
                     )
                     },
+
                     navigationIcon = {
                         if (currentScreen == Screen.NovelDetails) {
                             IconButton(onClick = { currentScreen = Screen.ViewNovels }) {
@@ -88,7 +90,6 @@ fun NovelApp() {
                             ) {
                                 Icon(Icons.Filled.Favorite, contentDescription = "Favoritos")
                             }
-
                         }
                     }
                 )
@@ -110,7 +111,10 @@ fun NovelApp() {
                             novel = currentNovel!!,
                             novelRepository = novelRepository,
                             onBack = { currentScreen = Screen.ViewNovels },
-                            onAddReviewClick = { currentScreen = Screen.AddReview } // Añadir onAddReviewClick
+                            onAddReviewClick = { currentScreen = Screen.AddReview } ,
+                            onEditNovel = { updatedNovel ->
+                                novelRepository.updateNovel(updatedNovel)
+                            }
                         )
                     }
                     Screen.AddReview -> if (currentNovel != null) {

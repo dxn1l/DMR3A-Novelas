@@ -2,10 +2,12 @@ package com.example.dmr3a_novelas.ui.Screens
 
 import android.util.Log
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
 import androidx.compose.material3.AlertDialog
@@ -36,14 +38,19 @@ import com.example.dmr3a_novelas.DataBase.Review
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NovelDetailsScreen(novel: Novel, novelRepository: FirebaseNovelRepository, onBack: () -> Unit, onAddReviewClick: () -> Unit) {
+fun NovelDetailsScreen(novel: Novel,
+                       novelRepository: FirebaseNovelRepository,
+                       onBack: () -> Unit,
+                       onAddReviewClick: () -> Unit,
+                       onEditNovel: (Novel) -> Unit) {
     var isFavorite by remember { mutableStateOf(novel.getIsFavorite()) }
     var reviews by remember { mutableStateOf<List<Review>>(emptyList()) }
+    var refresh by remember { mutableStateOf(false) }
+    var currentNovel by remember { mutableStateOf(novel) }
 
-
-    LaunchedEffect(novel) {
+    LaunchedEffect(currentNovel) {
         novelRepository.getReviewsForNovel(
-            novel,
+            currentNovel,
             onResult = { reviewsList ->
                 reviews = reviewsList
             },
@@ -53,11 +60,23 @@ fun NovelDetailsScreen(novel: Novel, novelRepository: FirebaseNovelRepository, o
         )
     }
 
+    LaunchedEffect(isFavorite) {
+        currentNovel.id?.let {
+            novelRepository.getNovelById(it,
+                onResult = { novel ->
+                    currentNovel = novel
+                },
+                onError = { error ->
+                    Log.e("Error", "Error al obtener la novela: ${error.message}")
+                }
+            )
+        }
+    }
 
     Scaffold(
         topBar = {
             CenterAlignedTopAppBar(
-                title = { Text(novel.title) },
+                title = { Text(currentNovel.title) },
 
                 )
         }
@@ -65,19 +84,40 @@ fun NovelDetailsScreen(novel: Novel, novelRepository: FirebaseNovelRepository, o
         Column(modifier = Modifier
             .padding(innerPadding)
             .padding(16.dp)) {
-            Text("Autor: ${novel.author}", style = MaterialTheme.typography.bodyLarge)
-            Text("Año: ${novel.year}", style = MaterialTheme.typography.bodyLarge)
-            Text("Sinopsis: ${novel.synopsis}", style = MaterialTheme.typography.bodyLarge)
+            Text("Autor: ${currentNovel.author}", style = MaterialTheme.typography.bodyLarge)
+            Text("Año: ${currentNovel.year}", style = MaterialTheme.typography.bodyLarge)
+            Text("Sinopsis: ${currentNovel.synopsis}", style = MaterialTheme.typography.bodyLarge)
             Spacer(modifier = Modifier.height(16.dp))
-            IconButton(onClick = {
-                novelRepository.toggleFavorite(novel)
-                isFavorite = !isFavorite
-            }) {
-                Icon(
-                    imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                    contentDescription = if (isFavorite) "Quitar de favoritos" else "Agregar a favoritos",
-                    tint = if (isFavorite) Color.Red else LocalContentColor.current
-                )
+            var showDialog by remember { mutableStateOf(false) }
+            Row(verticalAlignment = Alignment.CenterVertically) {
+
+                IconButton(onClick = {
+                    showDialog = true
+
+                }) {
+                    Icon(Icons.Filled.Edit, contentDescription = "Editar")
+                }
+
+                if (showDialog) {
+                    EditNovelDialog(
+                        novel = currentNovel,
+                        onDismissRequest = { showDialog = false },
+                        onEditNovel =  {updatedNovel ->
+                            onEditNovel(updatedNovel)
+                            currentNovel = updatedNovel
+                            isFavorite = updatedNovel.getIsFavorite() }
+                    )
+                }
+                IconButton(onClick = {
+                    novelRepository.toggleFavorite(currentNovel)
+                    isFavorite = !isFavorite
+                }) {
+                    Icon(
+                        imageVector = if (isFavorite) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                        contentDescription = if (isFavorite) "Quitar de favoritos" else "Agregar a favoritos",
+                        tint = if (isFavorite) Color.Red else Color.Gray
+                    )
+                }
             }
             Button(onClick = onAddReviewClick,
                 modifier = Modifier.align(Alignment.CenterHorizontally)) {
@@ -92,12 +132,18 @@ fun NovelDetailsScreen(novel: Novel, novelRepository: FirebaseNovelRepository, o
                     Text("${review.usuario}: ${review.reviewText}", style = MaterialTheme.typography.bodyMedium)
                 }
             } else {
-                // Display a loading indicator or message while reviews are loading
                 Text("Cargando reseñas...")
             }
 
         }
     }
+
+    LaunchedEffect(refresh) {
+
+    }
 }
+
+
+
 
 
