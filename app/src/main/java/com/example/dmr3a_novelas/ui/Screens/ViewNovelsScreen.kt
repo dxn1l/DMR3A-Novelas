@@ -4,14 +4,22 @@ import android.util.Log
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
+import androidx.compose.material3.Card
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -35,7 +43,6 @@ fun ViewNovelsScreen(novelRepository: FirebaseNovelRepository, onAddNovelClick: 
     var novels by remember { mutableStateOf<List<Novel>>(emptyList()) }
     var currentNovel: Novel? by remember { mutableStateOf(null) }
     var currentScreen by remember { mutableStateOf(Screen.ViewNovels) }
-    var refresh by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         novelRepository.getAllNovels(
@@ -49,60 +56,84 @@ fun ViewNovelsScreen(novelRepository: FirebaseNovelRepository, onAddNovelClick: 
         )
     }
 
-
     Column {
-
-        Button(onClick = onAddNovelClick) {
-            Text("Añadir Novela")
+        IconButton(onClick = onAddNovelClick, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            Icon(Icons.Filled.Add, contentDescription = "Añadir Novela")
         }
 
-        novels.mapIndexed { index, novel ->
-            key(novel.title) {
-                var showDialog by remember { mutableStateOf(false) }
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Column(modifier = Modifier.weight(1f)) {
-                        Text("Título: ${novel.title}")
-                        Text("Autor: ${novel.author}")
-                    }
-                    IconButton(onClick = {
-                        showDialog=true
+        Column(modifier = Modifier.fillMaxSize().padding(16.dp).verticalScroll(rememberScrollState())) {
 
-                    }) {
-                        Icon(Icons.Filled.Edit, contentDescription = "Editar")
-                    }
+            novels.mapIndexed { index, novel ->
+                key(novel.title) {
+                    Card(modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(8.dp),) {
+                        var showDialog by remember { mutableStateOf(false) }
+                        var showDialogDelete by remember { mutableStateOf(false) }
+                        Row(verticalAlignment = Alignment.CenterVertically) {
+                            Column(modifier = Modifier.weight(1f)) {
+                                Text("Título: ${novel.title}")
+                                Text("Autor: ${novel.author}")
+                            }
+                            IconButton(onClick = {
+                                showDialog = true
 
-                    if (showDialog) {
-                        EditNovelDialog(
-                            novel = novel,
-                            onDismissRequest = { showDialog = false },
-                            onEditNovel = { updatedNovel ->
-                                novelRepository.updateNovel(updatedNovel)
-                            },
-                        )
-                    }
+                            }) {
+                                Icon(Icons.Filled.Edit, contentDescription = "Editar")
+                            }
 
-                    IconButton(onClick = {
-                        novelRepository.toggleFavorite(novel)
-                        refresh = !refresh
-                    }) {
-                        Icon(
-                            imageVector = if (novel.getIsFavorite()) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
-                            contentDescription = if (novel.getIsFavorite()) "Quitar de favoritos" else "Agregar a favoritos",
-                            tint = if (novel.getIsFavorite()) Color.Red else Color.Gray
-                        )
-                    }
-                    IconButton(onClick = {
-                        novelRepository.removeNovel(novel)
-                        refresh = !refresh
-                    }) {
-                        Icon(Icons.Filled.Delete, contentDescription = "Elimina")
-                    }
-                    IconButton(onClick = { onNovelClick(novel) }) {
-                        Icon(Icons.Filled.ArrowForward, contentDescription = "Ver detalles")
-                    }
+                            if (showDialog) {
+                                EditNovelDialog(
+                                    novel = novel,
+                                    onDismissRequest = { showDialog = false },
+                                    onEditNovel = { updatedNovel ->
+                                        novelRepository.updateNovel(updatedNovel)
+                                    },
+                                )
+                            }
 
+                            IconButton(onClick = {
+                                novelRepository.toggleFavorite(novel)
+                            }) {
+                                Icon(
+                                    imageVector = if (novel.getIsFavorite()) Icons.Filled.Favorite else Icons.Outlined.FavoriteBorder,
+                                    contentDescription = if (novel.getIsFavorite()) "Quitar de favoritos" else "Agregar a favoritos",
+                                    tint = if (novel.getIsFavorite()) Color.Red else Color.Gray
+                                )
+                            }
+                            IconButton(onClick = {
+                                showDialogDelete = true
+                            }) {
+                                Icon(Icons.Filled.Delete, contentDescription = "Elimina")
+                            }
+                            if (showDialogDelete) {
+                                AlertDialog(
+                                    onDismissRequest = { showDialogDelete = false },
+                                    title = { Text("Eliminar novela") },
+                                    text = { Text("¿Estás seguro de que deseas eliminar esta novela?") },
+                                    confirmButton = {
+                                        Button(onClick = {
+                                            novelRepository.removeNovel(novel)
+                                            showDialogDelete = false
+                                        }) {
+                                            Text("Eliminar")
+                                        }
+                                    },
+                                    dismissButton = {
+                                        Button(onClick = { showDialogDelete = false }) {
+                                            Text("Cancelar")
+                                        }
+                                    }
+                                )
+                            }
+                            IconButton(onClick = { onNovelClick(novel) }) {
+                                Icon(Icons.Filled.ArrowForward, contentDescription = "Ver detalles")
+                            }
+
+                        }
+                        Spacer(modifier = Modifier.height(8.dp))
+                    }
                 }
-                Spacer(modifier = Modifier.height(8.dp))
             }
         }
 
@@ -116,8 +147,8 @@ fun ViewNovelsScreen(novelRepository: FirebaseNovelRepository, onAddNovelClick: 
                 },
                 onDeleteReviewClick = { review ->
                     novelRepository.deleteReview(review,
-                        onSuccess = { /* Manejo de éxito (por ejemplo, mostrar un mensaje) */ },
-                        onError = { error -> /* Manejo de error (por ejemplo, mostrar un mensaje de error) */ }
+                        onSuccess = {  },
+                        onError = { error -> }
                     )
                 }
             )
@@ -125,12 +156,7 @@ fun ViewNovelsScreen(novelRepository: FirebaseNovelRepository, onAddNovelClick: 
         }
 
     }
-    LaunchedEffect(refresh) {
 
-    }
 
 
 }
-
-
-

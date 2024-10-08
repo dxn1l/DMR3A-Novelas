@@ -116,8 +116,8 @@ fun NovelApp() {
                             },
                             onDeleteReviewClick = { review ->
                                 novelRepository.deleteReview(review,
-                                    onSuccess = { /* Manejo de éxito (por ejemplo, mostrar un mensaje) */ },
-                                    onError = { error -> /* Manejo de error (por ejemplo, mostrar un mensaje de error) */ }
+                                    onSuccess = { },
+                                    onError = { error -> }
                                 )
                             }
 

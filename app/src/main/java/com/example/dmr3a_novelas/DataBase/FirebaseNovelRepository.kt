@@ -97,13 +97,6 @@ class FirebaseNovelRepository {
     }
 
 
-    fun updateReview(review: Review, onSuccess: () -> Unit, onError: (DatabaseError) -> Unit) {
-        val reviewRef = database.child("reviews").child(review.id!!)
-        reviewRef.setValue(review)
-            .addOnSuccessListener { onSuccess() }
-            .addOnFailureListener { error -> onError(DatabaseError.fromException(error)) }
-    }
-
 
     fun deleteReview(review: Review, onSuccess: () -> Unit, onError: (DatabaseError) -> Unit) {
         val reviewRef = database.child("reviews").child(review.id!!)

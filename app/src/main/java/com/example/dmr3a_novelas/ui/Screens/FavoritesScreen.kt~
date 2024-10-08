@@ -9,8 +9,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowForward
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.Text
@@ -74,30 +72,10 @@ fun FavoritesScreen(novelRepository: FirebaseNovelRepository,onNovelClick: (Nove
                         )
                     }
                     IconButton(onClick = {
-                        showDialogDelete = true
+                        novelRepository.toggleFavorite(novel)
+                        refresh = !refresh
                     }) {
                         Icon(Icons.Filled.Delete, contentDescription = "Eliminar de favoritos")
-                    }
-                    if (showDialogDelete) {
-                        AlertDialog(
-                            onDismissRequest = { showDialogDelete = false },
-                            title = { Text("Eliminar de favoritos") },
-                            text = { Text("¿Estás seguro de que deseas eliminar esta novela de tus favoritos?") },
-                            confirmButton = {
-                                Button(onClick = {
-                                    novelRepository.toggleFavorite(novel)
-                                    refresh = !refresh
-                                    showDialogDelete = false
-                                }) {
-                                    Text("Eliminar")
-                                }
-                            },
-                            dismissButton = {
-                                Button(onClick = { showDialogDelete = false }) {
-                                    Text("Cancelar")
-                                }
-                            }
-                        )
                     }
 
                     IconButton(onClick = { onNovelClick(novel) }) {

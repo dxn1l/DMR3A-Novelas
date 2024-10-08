@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.Favorite
 import androidx.compose.material.icons.outlined.FavoriteBorder
@@ -120,9 +121,9 @@ fun NovelDetailsScreen(novel: Novel,
                     )
                 }
             }
-            Button(onClick = onAddReviewClick,
-                modifier = Modifier.align(Alignment.CenterHorizontally)) {
-                Text("Añadir reseña")
+
+            IconButton(onClick = onAddReviewClick, modifier = Modifier.align(Alignment.CenterHorizontally)) {
+                Icon(Icons.Filled.Add, contentDescription = "Añadir Reseña")
             }
 
             Spacer(modifier = Modifier.height(16.dp))
