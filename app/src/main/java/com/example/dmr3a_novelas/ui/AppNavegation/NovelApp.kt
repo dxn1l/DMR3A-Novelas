@@ -21,8 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
 import com.example.dmr3a_novelas.DataBase.Novel
-import com.example.dmr3a_novelas.DataBase.NovelDatabase
 import com.example.dmr3a_novelas.ui.Screens.AddNovelScreen
 import com.example.dmr3a_novelas.ui.Screens.AddReviewScreen
 import com.example.dmr3a_novelas.ui.Screens.FavoritesScreen
@@ -32,9 +32,12 @@ import com.example.dmr3a_novelas.ui.Screens.ViewNovelsScreen
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NovelApp() {
-    val novelDatabase = remember { NovelDatabase.getInstance() }
+
+    val novelRepository = remember { FirebaseNovelRepository()}
     var currentNovel by remember { mutableStateOf<Novel?>(null) }
     var currentScreen by remember { mutableStateOf(Screen.ViewNovels) }
+    var novelAdded by remember { mutableStateOf(false) }
+    var reviewAdded by remember { mutableStateOf(false) }
 
     MaterialTheme(
 
@@ -56,22 +59,31 @@ fun NovelApp() {
                         }
                     )
                     },
+
                     navigationIcon = {
-                        if (currentScreen == Screen.NovelDetails) {
-                            IconButton(onClick = { currentScreen = Screen.ViewNovels }) {
+                        if (currentScreen == Screen.NovelDetails
+                            ) {
+                            IconButton(onClick = { currentScreen = Screen.ViewNovels
+                                    novelAdded = false
+                            }) {
                                 Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
                             }
                         }
                         else if (currentScreen == Screen.AddNovel) {
-                            IconButton(onClick = { currentScreen = Screen.ViewNovels }) {
+                            IconButton(onClick = { currentScreen = Screen.ViewNovels
+                                    novelAdded = false
+                            }) {
                                 Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
                             }
                         }else if (currentScreen == Screen.Favorites) {
-                            IconButton(onClick = { currentScreen = Screen.ViewNovels }) {
+                            IconButton(onClick = { currentScreen = Screen.ViewNovels
+                                    novelAdded = false
+                            }) {
                                 Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
                             }
                         }
                         else if (currentScreen == Screen.AddReview) {
+                            reviewAdded = false
                             IconButton(onClick = { currentScreen = Screen.NovelDetails }) {
                                 Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
                             }
@@ -88,7 +100,6 @@ fun NovelApp() {
                             ) {
                                 Icon(Icons.Filled.Favorite, contentDescription = "Favoritos")
                             }
-
                         }
                     }
                 )
@@ -96,30 +107,53 @@ fun NovelApp() {
         ) { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
                 when (currentScreen) {
-                    Screen.ViewNovels -> ViewNovelsScreen(novelDatabase, onAddNovelClick = { currentScreen = Screen.AddNovel }) { novel ->
+                    Screen.ViewNovels -> ViewNovelsScreen(
+                        novelRepository = novelRepository,
+                        onAddNovelClick = { currentScreen = Screen.AddNovel },
+                        onNovelClick = { novel ->
+                            currentNovel = novel
+                            currentScreen = Screen.NovelDetails
+                            reviewAdded = false
+                        },
+                        novelAdded = novelAdded
+                    )
+                    Screen.AddNovel -> AddNovelScreen(
+                        novelRepository = novelRepository,
+                        onNovelAdded = {
+                            currentScreen = Screen.ViewNovels
+                            novelAdded = true
+                        }
+                    )
+
+                    Screen.Favorites -> FavoritesScreen(novelRepository = novelRepository, onNovelClick = { novel ->
                         currentNovel = novel
                         currentScreen = Screen.NovelDetails
-                    }
-                    Screen.AddNovel -> AddNovelScreen(novelDatabase) { currentScreen = Screen.ViewNovels }
-                    Screen.Favorites -> FavoritesScreen(novelDatabase, onBackToHome = { currentScreen = Screen.ViewNovels }, onNovelClick = { novel ->
-                        currentNovel = novel
-                        currentScreen = Screen.NovelDetails
+                        reviewAdded = false
                     })
                     Screen.NovelDetails -> if (currentNovel != null) {
                         NovelDetailsScreen(
                             novel = currentNovel!!,
-                            novelDatabase = novelDatabase,
-                            onBack = { currentScreen = Screen.ViewNovels },
-                            onAddReviewClick = { currentScreen = Screen.AddReview } // Añadir onAddReviewClick
+                            novelRepository = novelRepository,
+                            onAddReviewClick = { currentScreen = Screen.AddReview },
+                            onEditNovel = { updatedNovel ->
+                                novelRepository.updateNovel(updatedNovel)
+                            },
+                            onDeleteReviewClick = { review ->
+                                novelRepository.deleteReview(review,
+                                    onSuccess = { },
+                                    onError = { error -> }
+                                )
+                            },
+                            reviewAdded = reviewAdded
+
                         )
                     }
                     Screen.AddReview -> if (currentNovel != null) {
                         AddReviewScreen(
                             novel = currentNovel!!,
-                            novelDatabase = novelDatabase,
-                            onReviewAdded = { currentScreen = Screen.NovelDetails },
-                            onBackToDetails = { currentScreen = Screen.NovelDetails }
-
+                            novelRepository = novelRepository,
+                            onReviewAdded = { currentScreen = Screen.NovelDetails
+                                reviewAdded = true},
                         )
                     }
                 }

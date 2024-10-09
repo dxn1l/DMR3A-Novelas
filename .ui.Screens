@@ -1,0 +1,119 @@
+[33mcommit 31bf1006363ffd4e69c01a1850e1864f1ffdd1af[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mv2[m[33m, [m[1;31morigin/v2[m[33m)[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Tue Oct 8 02:09:51 2024 +0200
+
+    Updated delete button
+
+[33mcommit 419ec8643502d62d55b5e79534546496740a9ea7[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Tue Oct 8 00:32:59 2024 +0200
+
+    improved details screen
+
+[33mcommit 42c4e055e16f4f407c76e96369b444f1144cd022[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Mon Oct 7 19:27:13 2024 +0200
+
+    Fixed favorite and edit buttons on details screen
+
+[33mcommit 809b2835e4943cb506af630b45bc6b188440fc8b[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Mon Oct 7 00:46:50 2024 +0200
+
+    Added edit button
+
+[33mcommit 4ca983c5d713d085da7ad2159e2e87f6ffd485fb[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Sun Oct 6 21:08:27 2024 +0200
+
+    id section added on AddNovelScreen
+
+[33mcommit 60b01f9082a7dba559f11ac66efdd8f824d1a1b7[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Sun Oct 6 20:47:14 2024 +0200
+
+    Firebase implemented
+
+[33mcommit abe9fab74d0bba09d3c89d48da7798a497f5f830[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Sun Oct 6 20:44:06 2024 +0200
+
+    Firebase implementation
+
+[33mcommit ed9f99637d45ba44748d335d2aa9174b56162991[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Sun Oct 6 12:21:16 2024 +0200
+
+    New README
+
+[33mcommit 8779b19ef380c1c1400a1dac65bd6d60dcfe0da3[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Sun Oct 6 12:19:18 2024 +0200
+
+    Update README
+
+[33mcommit 830889012a242e63e535f3d6f6f759dbaf3356f7[m[33m ([m[1;31morigin/v1[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mmain[m[33m)[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Sat Oct 5 23:36:08 2024 +0200
+
+    Refactor
+
+[33mcommit 1a3a8dd29efb72d9c20ed8133ce3ae6c4b03d708[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Sat Sep 28 21:24:16 2024 +0200
+
+    Update-README.md
+
+[33mcommit 7ae835571e951ae92cbc904542710bb8eb486953[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Sat Sep 28 21:20:39 2024 +0200
+
+    Add-README.md
+
+[33mcommit d29fb5475e18f3eaa7587a291879cd9c5f8847ed[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Sat Sep 28 20:19:04 2024 +0200
+
+    Update-Structure
+
+[33mcommit 961a28def3cc76ed65f1db26deb2c126d2429865[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Sat Sep 28 20:03:13 2024 +0200
+
+    Back-fixed
+
+[33mcommit 3b1b1fceb97b539ef722f4dcba6c882956b4bac3[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Sat Sep 28 16:43:35 2024 +0200
+
+    Background
+
+[33mcommit ad89ff38216e8ac8d3db390076ae6722a8e6a193[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Sat Sep 28 16:18:00 2024 +0200
+
+    Add-Reviews
+
+[33mcommit e9f901c1d13e73f1aa5c058c9bef9dcc64fc6cc5[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Sat Sep 28 15:31:55 2024 +0200
+
+    Review-Screen
+
+[33mcommit ebe6a1f84e694bf9624b0a78a528b1c6fa1f79fd[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Sat Sep 28 14:56:19 2024 +0200
+
+    Delete-Favorites-Novels
+
+[33mcommit 5266d35873ca4e14bb35f62fd31c96558a54dd18[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Sat Sep 28 14:41:10 2024 +0200
+
+    Add-Favorite_list
+
+[33mcommit 071d98e483c03f2f2aeab98b5e1e7ce8de92645d[m
+Author: dxn1l <danielmorenorey2012@gmail.com>
+Date:   Sat Sep 28 14:08:07 2024 +0200
+
+    Initial commit

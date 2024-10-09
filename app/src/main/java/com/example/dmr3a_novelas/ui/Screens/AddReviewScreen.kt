@@ -22,26 +22,42 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
 import com.example.dmr3a_novelas.DataBase.Novel
-import com.example.dmr3a_novelas.DataBase.NovelDatabase
 
 
 @Composable
-fun AddReviewScreen(novel: Novel, novelDatabase: NovelDatabase, onReviewAdded: () -> Unit, onBackToDetails: () -> Unit) {
+fun AddReviewScreen(novel: Novel,
+                    novelRepository: FirebaseNovelRepository,
+                    onReviewAdded: () -> Unit) {
+
+    var id by remember { mutableStateOf("") }
     var reviewText by remember { mutableStateOf("") }
     var usuario by remember { mutableStateOf("") }
     val keyboardController = LocalSoftwareKeyboardController.current
     var showDialog by remember { mutableStateOf(false) }
-
-
-
-
-
+    var showIdExistsDialog by remember { mutableStateOf(false) }
+    var showEmptyFieldDialog by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier
         .fillMaxSize()
         .padding(16.dp)) {
 
+        OutlinedTextField(
+            value = id,
+            onValueChange = { id = it},
+            label = { Text("ID") },
+            modifier = Modifier.fillMaxWidth(),
+            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+            keyboardActions = KeyboardActions(
+                onDone = {
+                    keyboardController?.hide()
+
+                }
+
+        )
+                    )
+        Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(
             value = usuario,
@@ -73,11 +89,23 @@ fun AddReviewScreen(novel: Novel, novelDatabase: NovelDatabase, onReviewAdded: (
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                if (reviewText.isBlank() || usuario.isBlank()) { // Validar ambos campos
+                if (id.isBlank() || reviewText.isBlank() || usuario.isBlank()) {
                     showDialog = true
-                } else {
-                    novelDatabase.addReview(novel, reviewText, usuario)
-                    onReviewAdded()
+                }else if(id.contains("\n")||
+                    usuario.contains("\n")){
+                    showEmptyFieldDialog = true
+                }else{
+                    novelRepository.checkIdExists(id) { exists ->
+
+                        if (exists) {
+                            showIdExistsDialog = true
+                        } else {
+                            novelRepository.addReview(id, novel, reviewText, usuario)
+                            onReviewAdded()
+                        }
+                    }
+
+
                 }
             }
         )  {
@@ -91,6 +119,33 @@ fun AddReviewScreen(novel: Novel, novelDatabase: NovelDatabase, onReviewAdded: (
                 text = { Text("Ningún campo puede estar vacío") },
                 confirmButton = {
                     TextButton(onClick = { showDialog = false }) {
+                        Text("OK")
+                    }
+                }
+            )
+        }
+
+        if (showEmptyFieldDialog) {
+            AlertDialog(
+                onDismissRequest = { showEmptyFieldDialog = false },
+                title = { Text("Error") },
+                text = { Text("Los campos id y nombre no pueden tener líneas en blanco") },
+                confirmButton = {
+                    TextButton(onClick = { showEmptyFieldDialog = false }) {
+                        Text("OK")
+                    }
+                }
+            )
+        }
+
+
+        if (showIdExistsDialog) {
+            AlertDialog(
+                onDismissRequest = { showIdExistsDialog = false },
+                title = { Text("Error") },
+                text = { Text("Este ID ya está en propiedad") },
+                confirmButton = {
+                    TextButton(onClick = { showIdExistsDialog = false }) {
                         Text("OK")
                     }
                 }
