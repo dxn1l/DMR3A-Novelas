@@ -31,9 +31,17 @@ class FirebaseNovelRepository {
     }
 
     fun removeNovel(novel: Novel) {
-        novel.id?.let {
-            database.child("novels").child(it).removeValue()
-        }
+        getReviewsForNovel(novel, onResult = { reviews ->
+            reviews.forEach { review ->
+                deleteReview(review, onSuccess = {
+                }, onError = { error ->
+                })
+            }
+            novel.id?.let {
+                database.child("novels").child(it).removeValue()
+            }
+        }, onError = { error ->
+        })
     }
 
     fun getFavoriteNovels(onResult: (List<Novel>) -> Unit, onError: (DatabaseError) -> Unit) {
@@ -115,6 +123,8 @@ class FirebaseNovelRepository {
             }
         }
     }
+
+
 
 
 
