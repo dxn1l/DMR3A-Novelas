@@ -37,6 +37,7 @@ fun AddReviewScreen(novel: Novel,
     val keyboardController = LocalSoftwareKeyboardController.current
     var showDialog by remember { mutableStateOf(false) }
     var showIdExistsDialog by remember { mutableStateOf(false) }
+    var showEmptyFieldDialog by remember { mutableStateOf(false) }
 
     Column(modifier = Modifier
         .fillMaxSize()
@@ -44,7 +45,7 @@ fun AddReviewScreen(novel: Novel,
 
         OutlinedTextField(
             value = id,
-            onValueChange = { id = it },
+            onValueChange = { id = it},
             label = { Text("ID") },
             modifier = Modifier.fillMaxWidth(),
             keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
@@ -90,6 +91,9 @@ fun AddReviewScreen(novel: Novel,
             onClick = {
                 if (id.isBlank() || reviewText.isBlank() || usuario.isBlank()) {
                     showDialog = true
+                }else if(id.contains("\n")||
+                    usuario.contains("\n")){
+                    showEmptyFieldDialog = true
                 }else{
                     novelRepository.checkIdExists(id) { exists ->
 
@@ -100,6 +104,8 @@ fun AddReviewScreen(novel: Novel,
                             onReviewAdded()
                         }
                     }
+
+
                 }
             }
         )  {
@@ -113,6 +119,19 @@ fun AddReviewScreen(novel: Novel,
                 text = { Text("Ningún campo puede estar vacío") },
                 confirmButton = {
                     TextButton(onClick = { showDialog = false }) {
+                        Text("OK")
+                    }
+                }
+            )
+        }
+
+        if (showEmptyFieldDialog) {
+            AlertDialog(
+                onDismissRequest = { showEmptyFieldDialog = false },
+                title = { Text("Error") },
+                text = { Text("Los campos id y nombre no pueden tener líneas en blanco") },
+                confirmButton = {
+                    TextButton(onClick = { showEmptyFieldDialog = false }) {
                         Text("OK")
                     }
                 }

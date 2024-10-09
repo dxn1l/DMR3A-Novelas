@@ -21,6 +21,9 @@ import androidx.compose.material3.LocalContentColor
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
@@ -44,11 +47,22 @@ fun NovelDetailsScreen(novel: Novel,
                        novelRepository: FirebaseNovelRepository,
                        onAddReviewClick: () -> Unit,
                        onEditNovel: (Novel) -> Unit,
-                       onDeleteReviewClick: (Review) -> Unit) {
+                       onDeleteReviewClick: (Review) -> Unit,
+                       reviewAdded: Boolean) {
     var isFavorite by remember { mutableStateOf(novel.getIsFavorite()) }
     var reviews by remember { mutableStateOf<List<Review>>(emptyList()) }
-    var refresh by remember { mutableStateOf(false) }
     var currentNovel by remember { mutableStateOf(novel) }
+    val snackbarHostState = remember { SnackbarHostState() }
+
+
+    LaunchedEffect(reviewAdded) {
+        if (reviewAdded){
+            snackbarHostState.showSnackbar("Reseña agregada exitosamente",
+                duration = SnackbarDuration.Short,
+                actionLabel = "Aceptar"
+            )
+        }
+    }
 
     LaunchedEffect(currentNovel) {
         novelRepository.getReviewsForNovel(
@@ -76,6 +90,7 @@ fun NovelDetailsScreen(novel: Novel,
     }
 
     Scaffold(
+        snackbarHost = { SnackbarHost(snackbarHostState) },
         topBar = {
             CenterAlignedTopAppBar(
                 title = { Text(currentNovel.title) },
@@ -146,9 +161,6 @@ fun NovelDetailsScreen(novel: Novel,
         }
     }
 
-    LaunchedEffect(refresh) {
-
-    }
 }
 
 

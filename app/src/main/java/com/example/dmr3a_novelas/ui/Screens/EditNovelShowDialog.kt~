@@ -50,6 +50,7 @@ fun EditNovelDialog(
                     label = {
                         Text("Título")
                     },
+                    modifier = Modifier.fillMaxWidth(),
                     keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(
                         onDone = {

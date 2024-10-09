@@ -21,9 +21,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.input.key.KeyEvent
+import androidx.compose.ui.input.key.onKeyEvent
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.ViewModel
 import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
 import com.example.dmr3a_novelas.DataBase.Novel
 
@@ -36,6 +39,8 @@ fun AddNovelScreen(novelRepository: FirebaseNovelRepository, onNovelAdded: () ->
     var year by remember { mutableStateOf("") }
     var showDialog by remember { mutableStateOf(false) }
     var synopsis by remember { mutableStateOf("") }
+    var showDialogEmptylane by remember { mutableStateOf(false) }
+
     val keyboardController = LocalSoftwareKeyboardController.current
 
     Column(
@@ -103,8 +108,18 @@ fun AddNovelScreen(novelRepository: FirebaseNovelRepository, onNovelAdded: () ->
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                if (id.isBlank() || title.isBlank() || author.isBlank() || year.isBlank() || synopsis.isBlank()) {
+                if (id.isBlank()
+                    || title.isBlank()
+                    || author.isBlank()
+                    || year.isBlank()
+                    || synopsis.isBlank()) {
                     showDialog = true
+                }else if(id.contains("\n" )
+                        || title.contains("\n" )
+                        || author.contains("\n" )
+                        || year.contains("\n" )
+                ){
+                    showDialogEmptylane = true
                 } else {
                     val novel = Novel(id= id, title, author, year.toIntOrNull() ?: 0, synopsis)
                     novelRepository.addNovel(novel)
@@ -113,6 +128,19 @@ fun AddNovelScreen(novelRepository: FirebaseNovelRepository, onNovelAdded: () ->
             }
         ) {
             Text("Guardar Novela")
+        }
+
+        if (showDialogEmptylane){
+            AlertDialog(
+                onDismissRequest = { showDialogEmptylane = false },
+                title = { Text("Error") },
+                text = { Text("Todos los campos excepto synopsis no pueden tener líneas vacias" ) },
+                confirmButton = {
+                    TextButton(onClick = { showDialogEmptylane = false }) {
+                        Text("OK")
+                    }
+                }
+            )
         }
 
         if (showDialog) {
@@ -129,3 +157,4 @@ fun AddNovelScreen(novelRepository: FirebaseNovelRepository, onNovelAdded: () ->
         }
     }
 }
+
