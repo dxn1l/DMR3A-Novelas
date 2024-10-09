@@ -8,10 +8,5 @@ data class Novel(
     val synopsis: String = "",
     var _isFavorite: Boolean = false
 ) {
-
     fun getIsFavorite(): Boolean = _isFavorite
-    fun setFavorite(favorite: Boolean) { _isFavorite = favorite }
-
-    constructor() : this(null, "", "", 0, "", false)
-
 }

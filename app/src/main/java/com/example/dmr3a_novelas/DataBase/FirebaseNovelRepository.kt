@@ -104,8 +104,6 @@ class FirebaseNovelRepository {
         })
     }
 
-
-
     fun deleteReview(review: Review, onSuccess: () -> Unit, onError: (DatabaseError) -> Unit) {
         val reviewRef = database.child("reviews").child(review.id!!)
         reviewRef.removeValue()
@@ -123,9 +121,5 @@ class FirebaseNovelRepository {
             }
         }
     }
-
-
-
-
 
 }

@@ -5,8 +5,4 @@ data class Review(
     val novelId: String = "",
     val reviewText: String = "",
     val usuario: String = ""
-    ){
-
-    constructor() : this(null, "", "", "")
-
-}
+    )

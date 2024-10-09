@@ -19,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
 import com.example.dmr3a_novelas.DataBase.Novel
-import com.example.dmr3a_novelas.ui.AppNavegation.Screen
 
 @Composable
 fun ViewNovelsScreen(
@@ -29,9 +28,6 @@ fun ViewNovelsScreen(
     novelAdded: Boolean
 ) {
     var novels by remember { mutableStateOf<List<Novel>>(emptyList()) }
-    var currentNovel: Novel? by remember { mutableStateOf(null) }
-    var currentScreen by remember { mutableStateOf(Screen.ViewNovels) }
-    var reviewAdded by remember { mutableStateOf(false) }
     val snackbarHostState = remember { SnackbarHostState() }
 
 
