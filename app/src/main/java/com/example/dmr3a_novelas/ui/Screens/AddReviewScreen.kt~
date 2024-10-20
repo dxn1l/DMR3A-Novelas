@@ -55,8 +55,8 @@ fun AddReviewScreen(novel: Novel,
 
                 }
 
-            )
         )
+                    )
         Spacer(modifier = Modifier.height(8.dp))
 
         OutlinedTextField(

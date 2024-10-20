@@ -112,9 +112,9 @@ fun AddNovelScreen(novelRepository: FirebaseNovelRepository, onNovelAdded: () ->
                     || synopsis.isBlank()) {
                     showDialog = true
                 }else if(id.contains("\n" )
-                        || title.contains("\n" )
-                        || author.contains("\n" )
-                        || year.contains("\n" )
+                    || title.contains("\n" )
+                    || author.contains("\n" )
+                    || year.contains("\n" )
                 ){
                     showDialogEmptylane = true
                 } else {

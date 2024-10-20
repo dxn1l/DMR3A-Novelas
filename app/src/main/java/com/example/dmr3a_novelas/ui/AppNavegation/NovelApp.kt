@@ -62,22 +62,22 @@ fun NovelApp() {
 
                     navigationIcon = {
                         if (currentScreen == Screen.NovelDetails
-                            ) {
+                        ) {
                             IconButton(onClick = { currentScreen = Screen.ViewNovels
-                                    novelAdded = false
+                                novelAdded = false
                             }) {
                                 Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
                             }
                         }
                         else if (currentScreen == Screen.AddNovel) {
                             IconButton(onClick = { currentScreen = Screen.ViewNovels
-                                    novelAdded = false
+                                novelAdded = false
                             }) {
                                 Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
                             }
                         }else if (currentScreen == Screen.Favorites) {
                             IconButton(onClick = { currentScreen = Screen.ViewNovels
-                                    novelAdded = false
+                                novelAdded = false
                             }) {
                                 Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
                             }

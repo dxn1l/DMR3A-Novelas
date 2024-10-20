@@ -63,7 +63,7 @@ fun EditNovelDialog(
                     label = {
                         Text("Autor")
                     },
-                    keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
+                            keyboardOptions = KeyboardOptions(imeAction = ImeAction.Done),
                     keyboardActions = KeyboardActions(
                         onDone = {
                             keyboardController?.hide()

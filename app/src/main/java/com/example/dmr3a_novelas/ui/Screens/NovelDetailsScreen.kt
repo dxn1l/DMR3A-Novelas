@@ -142,10 +142,10 @@ fun NovelDetailsScreen(novel: Novel,
             if (reviews.isNotEmpty()) {
 
 
-                    ReviewsList(
-                        reviews = reviews,
-                        onDeleteClick = onDeleteReviewClick
-                    )
+                ReviewsList(
+                    reviews = reviews,
+                    onDeleteClick = onDeleteReviewClick
+                )
 
             } else {
                 Text("Cargando reseñas...")
