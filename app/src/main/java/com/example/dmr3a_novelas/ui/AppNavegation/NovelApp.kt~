@@ -39,7 +39,6 @@ fun NovelApp() {
     var novelAdded by remember { mutableStateOf(false) }
     var reviewAdded by remember { mutableStateOf(false) }
 
-
     MaterialTheme(
 
         colorScheme = darkColorScheme(
