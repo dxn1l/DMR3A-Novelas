@@ -30,15 +30,6 @@
         <service
             android:name=".ui.Syncronized.DataSyncJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
-
-        <receiver android:name=".ui.Broadcast.WifiBroadcastReceiver"
-            android:exported="false">
-            <intent-filter>
-                <action android:name="android.net.conn.CONNECTIVITY_CHANGE"
-                    tools:ignore="BatteryLife" />
-            </intent-filter>
-        </receiver>
-
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />

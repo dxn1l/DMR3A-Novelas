@@ -5,7 +5,6 @@ import android.app.job.JobParameters
 import android.app.job.JobService
 import android.util.Log
 import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
-import com.example.dmr3a_novelas.ui.Notification.sendNotification
 
 class DataSyncJobService : JobService() {
     private val novelRepository = FirebaseNovelRepository()
