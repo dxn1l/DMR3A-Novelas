@@ -25,13 +25,12 @@ class MainActivity : ComponentActivity() {
 
     }
 
-
     private fun scheduleJob() {
         val componentName = ComponentName(this, DataSyncJobService::class.java)
         val jobInfo = JobInfo.Builder(1, componentName)
             .setRequiredNetworkType(JobInfo.NETWORK_TYPE_ANY)
             .setPersisted(true)
-            .setPeriodic(2 * 60 * 1000)
+            .setPeriodic(15 * 60 * 1000)
             .build()
 
         val jobScheduler = getSystemService(JOB_SCHEDULER_SERVICE) as JobScheduler

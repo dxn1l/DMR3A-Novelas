@@ -21,11 +21,13 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalSoftwareKeyboardController
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
 import com.example.dmr3a_novelas.DataBase.Novel
+import com.example.dmr3a_novelas.ui.Notification.sendNotification
 
 @Composable
 fun AddNovelScreen(novelRepository: FirebaseNovelRepository, onNovelAdded: () -> Unit) {
@@ -39,6 +41,7 @@ fun AddNovelScreen(novelRepository: FirebaseNovelRepository, onNovelAdded: () ->
     var showDialogEmptylane by remember { mutableStateOf(false) }
 
     val keyboardController = LocalSoftwareKeyboardController.current
+    val context = LocalContext.current
 
     Column(
         modifier = Modifier
@@ -121,6 +124,12 @@ fun AddNovelScreen(novelRepository: FirebaseNovelRepository, onNovelAdded: () ->
                     val novel = Novel(id= id, title, author, year.toIntOrNull() ?: 0, synopsis)
                     novelRepository.addNovel(novel)
                     onNovelAdded()
+                    sendNotification(
+                        context = context,
+                        title = "Novela Guardada",
+                        message = "La novela $title ha sido guardada",
+                        notificationId = 2
+                    )
                 }
             }
         ) {

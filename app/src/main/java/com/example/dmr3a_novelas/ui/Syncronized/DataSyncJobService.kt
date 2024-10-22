@@ -1,16 +1,11 @@
 package com.example.dmr3a_novelas.ui.Syncronized
 
-import android.app.PendingIntent
+
 import android.app.job.JobParameters
 import android.app.job.JobService
-import android.content.Context
-import android.content.Intent
 import android.util.Log
-import androidx.core.app.NotificationCompat
-import androidx.core.app.NotificationManagerCompat
 import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
-import com.example.dmr3a_novelas.MainActivity
-import com.example.dmr3a_novelas.R
+import com.example.dmr3a_novelas.ui.Notification.sendNotification
 
 class DataSyncJobService : JobService() {
     private val novelRepository = FirebaseNovelRepository()
@@ -18,12 +13,11 @@ class DataSyncJobService : JobService() {
     override fun onStartJob(params: JobParameters?): Boolean {
         Log.d("DataSyncJobService", "Job started")
 
+
         novelRepository.getAllNovels(
             onResult = { novels ->
-
                 Log.d("DataSyncJobService", "Data synchronized")
-                sendNotification(this, "Data Sync", "Novels have been synchronized.")
-                jobFinished(params, false)
+                    jobFinished(params, false)
             },
             onError = { error ->
                 Log.e("DataSyncJobService", "Error syncing data: ${error.message}")
@@ -38,23 +32,4 @@ class DataSyncJobService : JobService() {
         return true
     }
 
-    private fun sendNotification(context: Context, title: String, message: String) {
-        val intent = Intent(context, MainActivity::class.java).apply {
-            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
-        }
-        val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent,
-            PendingIntent.FLAG_IMMUTABLE)
-
-        val builder = NotificationCompat.Builder(context, MainActivity.CHANNEL_ID)
-            .setSmallIcon(R.drawable.ic_notification)
-            .setContentTitle(title)
-            .setContentText(message)
-            .setPriority(NotificationCompat.PRIORITY_DEFAULT)
-            .setContentIntent(pendingIntent)
-            .setAutoCancel(true)
-
-        with(NotificationManagerCompat.from(context)) {
-            notify(1, builder.build())
-        }
-    }
 }
