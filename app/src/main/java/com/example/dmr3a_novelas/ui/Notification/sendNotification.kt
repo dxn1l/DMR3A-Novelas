@@ -8,9 +8,8 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
-import com.example.dmr3a_novelas.MainActivity
 import com.example.dmr3a_novelas.R
-import com.example.dmr3a_novelas.ui.BroadCast.InternetConnectivityReceiver
+import com.example.dmr3a_novelas.ui.Receiver.InternetConnectivityReceiver
 
 
 fun sendNotification(context: Context, title: String, message: String , notificationId: Int) {
@@ -20,7 +19,7 @@ fun sendNotification(context: Context, title: String, message: String , notifica
     val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent,
         PendingIntent.FLAG_IMMUTABLE)
 
-    var builder = NotificationCompat.Builder(context, InternetConnectivityReceiver.CHANNEL_ID)
+    var builder = NotificationCompat.Builder(context, NotificationHelper.CHANNEL_ID)
         .setSmallIcon(R.drawable.ic_notification)
         .setContentTitle(title)
         .setContentText(message)

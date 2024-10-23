@@ -1,6 +1,5 @@
 package com.example.dmr3a_novelas.ui.Screens
 
-import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -21,7 +20,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
 import com.example.dmr3a_novelas.DataBase.Novel
-import com.example.dmr3a_novelas.ui.BroadCast.InternetConnectivityReceiver
+import com.example.dmr3a_novelas.ui.Receiver.isInternetAvailables
 import com.example.dmr3a_novelas.ui.Notification.sendNotification
 
 
@@ -130,15 +129,23 @@ fun ViewNovelsScreen(
                                     text = { Text("¿Estás seguro de que deseas eliminar esta novela?") },
                                     confirmButton = {
                                         Button(onClick = {
+                                            if(!isInternetAvailables(context)){
+                                                sendNotification(
+                                                    context = context,
+                                                    title = "Error",
+                                                    message = "La novela ${novel.title} no ha podido ser borrada",
+                                                    notificationId = 2
+                                                )
+                                            }else{
                                             novelRepository.removeNovel(novel)
                                             showDialogDelete = false
                                             sendNotification(
                                                 context = context,
-                                                title = "Novela Guardada",
-                                                message = "La novela ${novel.title} ha sido guardada",
+                                                title = "Novela borrada",
+                                                message = "La novela ${novel.title} ha sido borrada",
                                                 notificationId = 2
                                             )
-                                        }) {
+                                        }}) {
                                             Text("Eliminar")
                                         }
                                     },

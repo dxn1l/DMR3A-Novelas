@@ -1,7 +1,6 @@
 package com.example.dmr3a_novelas.ui.Screens
 
 
-import android.content.Intent
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -28,7 +27,7 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
 import com.example.dmr3a_novelas.DataBase.Novel
-import com.example.dmr3a_novelas.ui.BroadCast.InternetConnectivityReceiver
+import com.example.dmr3a_novelas.ui.Receiver.isInternetAvailables
 import com.example.dmr3a_novelas.ui.Notification.sendNotification
 
 
@@ -42,6 +41,7 @@ fun AddNovelScreen(novelRepository: FirebaseNovelRepository, onNovelAdded: () ->
     var showDialog by remember { mutableStateOf(false) }
     var synopsis by remember { mutableStateOf("") }
     var showDialogEmptylane by remember { mutableStateOf(false) }
+    var showDialogDisconnected by remember { mutableStateOf(false) }
 
     val keyboardController = LocalSoftwareKeyboardController.current
     val context = LocalContext.current
@@ -111,7 +111,17 @@ fun AddNovelScreen(novelRepository: FirebaseNovelRepository, onNovelAdded: () ->
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                if (id.isBlank()
+                if(!isInternetAvailables(context)){
+
+                    sendNotification(
+                        context = context,
+                        title = "Error",
+                        message = "No se ha podido añadir la novela, conectese a internet",
+                        notificationId = 2
+                    )
+                    showDialogDisconnected = true
+                }
+                else if (id.isBlank()
                     || title.isBlank()
                     || author.isBlank()
                     || year.isBlank()
@@ -146,6 +156,19 @@ fun AddNovelScreen(novelRepository: FirebaseNovelRepository, onNovelAdded: () ->
                 text = { Text("Todos los campos excepto synopsis no pueden tener líneas vacias" ) },
                 confirmButton = {
                     TextButton(onClick = { showDialogEmptylane = false }) {
+                        Text("OK")
+                    }
+                }
+            )
+        }
+
+        if (showDialogDisconnected) {
+            AlertDialog(
+                onDismissRequest = { showDialogDisconnected = false },
+                title = { Text("Error") },
+                text = { Text("No hay conexión a internet") },
+                confirmButton = {
+                    TextButton(onClick = { showDialogDisconnected = false }) {
                         Text("OK")
                     }
                 }

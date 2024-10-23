@@ -1,10 +1,10 @@
 package com.example.dmr3a_novelas.ui.Syncronized
 
-
 import android.app.job.JobParameters
 import android.app.job.JobService
 import android.util.Log
 import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
+import com.example.dmr3a_novelas.ui.Receiver.isInternetAvailables
 
 class DataSyncJobService : JobService() {
     private val novelRepository = FirebaseNovelRepository()
@@ -12,11 +12,10 @@ class DataSyncJobService : JobService() {
     override fun onStartJob(params: JobParameters?): Boolean {
         Log.d("DataSyncJobService", "Job started")
 
-
         novelRepository.getAllNovels(
             onResult = { novels ->
                 Log.d("DataSyncJobService", "Data synchronized")
-                    jobFinished(params, false)
+                jobFinished(params, false)
             },
             onError = { error ->
                 Log.e("DataSyncJobService", "Error syncing data: ${error.message}")
@@ -30,5 +29,4 @@ class DataSyncJobService : JobService() {
         Log.d("DataSyncJobService", "Job stopped")
         return true
     }
-
 }

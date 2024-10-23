@@ -7,7 +7,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import com.example.dmr3a_novelas.ui.AppNavegation.NovelApp
-import com.example.dmr3a_novelas.ui.BroadCast.InternetConnectivityReceiver
+import com.example.dmr3a_novelas.ui.Receiver.InternetConnectivityReceiver
+
 
 class MainActivity : ComponentActivity() {
     private lateinit var connectivityReceiver: BroadcastReceiver
