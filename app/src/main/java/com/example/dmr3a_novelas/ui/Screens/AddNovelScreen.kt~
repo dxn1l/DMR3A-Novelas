@@ -29,7 +29,6 @@ import androidx.compose.ui.unit.dp
 import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
 import com.example.dmr3a_novelas.DataBase.Novel
 import com.example.dmr3a_novelas.ui.BroadCast.InternetConnectivityReceiver
-import com.example.dmr3a_novelas.ui.Notification.sendNotification
 
 
 @Composable
@@ -127,12 +126,14 @@ fun AddNovelScreen(novelRepository: FirebaseNovelRepository, onNovelAdded: () ->
                     val novel = Novel(id= id, title, author, year.toIntOrNull() ?: 0, synopsis)
                     novelRepository.addNovel(novel)
                     onNovelAdded()
-                    sendNotification(
-                        context = context,
-                        title = "Novela Guardada",
-                        message = "La novela $title ha sido guardada",
-                        notificationId = 2
-                    )
+                    val intent = Intent(context , InternetConnectivityReceiver::class.java).apply{
+                        action = "com.example.dmr3a_novelas.SEND_NOTIFICATION"
+                        putExtra("title", "Novela Guardada")
+                        putExtra("message", "La novela $title ha sido guardada")
+                        putExtra("notificationId", 2)
+
+                    }
+                    context.sendBroadcast(intent)
                 }
             }
         ) {

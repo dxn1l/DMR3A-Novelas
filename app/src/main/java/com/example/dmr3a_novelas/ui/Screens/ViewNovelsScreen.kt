@@ -1,5 +1,6 @@
 package com.example.dmr3a_novelas.ui.Screens
 
+import android.content.Intent
 import android.util.Log
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -16,9 +17,13 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
 import com.example.dmr3a_novelas.DataBase.Novel
+import com.example.dmr3a_novelas.ui.BroadCast.InternetConnectivityReceiver
+import com.example.dmr3a_novelas.ui.Notification.sendNotification
+
 
 @Composable
 fun ViewNovelsScreen(
@@ -29,6 +34,8 @@ fun ViewNovelsScreen(
 ) {
     var novels by remember { mutableStateOf<List<Novel>>(emptyList()) }
     val snackbarHostState = remember { SnackbarHostState() }
+
+    val context = LocalContext.current
 
 
     LaunchedEffect(novelAdded) {
@@ -125,6 +132,12 @@ fun ViewNovelsScreen(
                                         Button(onClick = {
                                             novelRepository.removeNovel(novel)
                                             showDialogDelete = false
+                                            sendNotification(
+                                                context = context,
+                                                title = "Novela Guardada",
+                                                message = "La novela ${novel.title} ha sido guardada",
+                                                notificationId = 2
+                                            )
                                         }) {
                                             Text("Eliminar")
                                         }
