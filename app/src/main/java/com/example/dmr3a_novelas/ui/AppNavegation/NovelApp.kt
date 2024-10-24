@@ -21,6 +21,8 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
+import androidx.room.Room
 import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
 import com.example.dmr3a_novelas.DataBase.Novel
 import com.example.dmr3a_novelas.ui.Screens.AddNovelScreen

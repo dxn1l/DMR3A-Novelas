@@ -8,12 +8,15 @@ import android.content.pm.PackageManager
 import androidx.core.app.ActivityCompat
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
+import com.example.dmr3a_novelas.MainActivity
 import com.example.dmr3a_novelas.R
-import com.example.dmr3a_novelas.ui.Receiver.InternetConnectivityReceiver
 
 
 fun sendNotification(context: Context, title: String, message: String , notificationId: Int) {
-    val intent = Intent(context, InternetConnectivityReceiver::class.java).apply {
+
+    createNotificationChannel(context)
+
+    val intent = Intent(context, MainActivity::class.java).apply {
         flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
     }
     val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent,
@@ -45,3 +48,4 @@ fun sendNotification(context: Context, title: String, message: String , notifica
         notify(notificationId, builder.build())
     }
 }
+

@@ -10,6 +10,7 @@ import kotlin.collections.mapNotNull
 class FirebaseNovelRepository {
     private val database = FirebaseDatabase.getInstance().reference
 
+
     fun getAllNovels(onResult: (List<Novel>) -> Unit,
                      onError: (DatabaseError) -> Unit) {
 

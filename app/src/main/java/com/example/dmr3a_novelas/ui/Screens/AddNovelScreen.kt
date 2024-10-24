@@ -27,8 +27,10 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.example.dmr3a_novelas.DataBase.FirebaseNovelRepository
 import com.example.dmr3a_novelas.DataBase.Novel
-import com.example.dmr3a_novelas.ui.Receiver.isInternetAvailables
 import com.example.dmr3a_novelas.ui.Notification.sendNotification
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
 
 
 @Composable
@@ -44,6 +46,7 @@ fun AddNovelScreen(novelRepository: FirebaseNovelRepository, onNovelAdded: () ->
     var showDialogDisconnected by remember { mutableStateOf(false) }
 
     val keyboardController = LocalSoftwareKeyboardController.current
+
     val context = LocalContext.current
 
     Column(
@@ -111,17 +114,7 @@ fun AddNovelScreen(novelRepository: FirebaseNovelRepository, onNovelAdded: () ->
         Spacer(modifier = Modifier.height(16.dp))
         Button(
             onClick = {
-                if(!isInternetAvailables(context)){
-
-                    sendNotification(
-                        context = context,
-                        title = "Error",
-                        message = "No se ha podido añadir la novela, conectese a internet",
-                        notificationId = 2
-                    )
-                    showDialogDisconnected = true
-                }
-                else if (id.isBlank()
+              if (id.isBlank()
                     || title.isBlank()
                     || author.isBlank()
                     || year.isBlank()

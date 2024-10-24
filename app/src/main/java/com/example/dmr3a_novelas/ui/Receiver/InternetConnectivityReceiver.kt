@@ -6,9 +6,9 @@ import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.util.Log
-import com.example.dmr3a_novelas.ui.Notification.createNotificationChannel
 import com.example.dmr3a_novelas.ui.Notification.sendNotification
 import com.example.dmr3a_novelas.ui.Syncronized.scheduleDataSyncJob
+
 
 
 class InternetConnectivityReceiver : BroadcastReceiver() {
@@ -17,7 +17,6 @@ class InternetConnectivityReceiver : BroadcastReceiver() {
 
         if(isInternetAvailables(context)){
             Log.d("InternetConnectivityReceiver", "Internet connected")
-            createNotificationChannel(context)
             sendNotification(
                 context,
                 "Internet Connected",
@@ -25,6 +24,7 @@ class InternetConnectivityReceiver : BroadcastReceiver() {
                 1
             )
             scheduleDataSyncJob(context)
+
         } else {
             Log.d("InternetConnectivityReceiver", "Internet disconnected")
             sendNotification(

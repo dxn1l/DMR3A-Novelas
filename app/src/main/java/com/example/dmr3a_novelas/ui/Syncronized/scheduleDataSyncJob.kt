@@ -5,7 +5,6 @@ import android.app.job.JobScheduler
 import android.content.ComponentName
 import android.content.Context
 import android.util.Log
-import com.example.dmr3a_novelas.ui.Receiver.isInternetAvailables
 
 fun scheduleDataSyncJob(context: Context) {
 
@@ -13,6 +12,7 @@ fun scheduleDataSyncJob(context: Context) {
     val jobId = 1
 
     val existingJob = jobScheduler.allPendingJobs.find { it.id == jobId }
+
     if (existingJob != null) {
         Log.d("DataSyncJobService", "Data sync job already scheduled")
         return
@@ -27,4 +27,5 @@ fun scheduleDataSyncJob(context: Context) {
 
     jobScheduler.schedule(jobInfo)
     Log.d("DataSyncJobService", "Data sync job scheduled")
+
 }
