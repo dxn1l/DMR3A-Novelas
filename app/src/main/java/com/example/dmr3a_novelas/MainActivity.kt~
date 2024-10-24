@@ -9,7 +9,7 @@ import androidx.activity.compose.setContent
 import androidx.loader.app.LoaderManager
 import androidx.loader.content.Loader
 import com.example.dmr3a_novelas.DataBase.Novel
-import com.example.dmr3a_novelas.ui.Alarm.scheduleReminder
+import com.example.dmr3a_novelas.ui.Alarm.scheduleDailyReminder
 import com.example.dmr3a_novelas.ui.AppNavegation.NovelApp
 import com.example.dmr3a_novelas.ui.Loader.NovelLoader
 import com.example.dmr3a_novelas.ui.Receiver.InternetConnectivityReceiver
@@ -27,7 +27,7 @@ class MainActivity : ComponentActivity(), LoaderManager.LoaderCallbacks<List<Nov
         }
         registerConnectivityReceiver()
         LoaderManager.getInstance(this).initLoader(0, null, this)
-        scheduleReminder(this)
+        scheduleDailyReminder(this)
     }
 
     private fun registerConnectivityReceiver() {

@@ -31,6 +31,7 @@
             android:name=".ui.Syncronized.DataSyncJobService"
             android:permission="android.permission.BIND_JOB_SERVICE" />
         <receiver android:name=".ui.Receiver.InternetConnectivityReceiver" />
+        <receiver android:name=".ui.Receiver.ReminderReceiver" />
     </application>
 
     <uses-permission android:name="android.permission.INTERNET" />
