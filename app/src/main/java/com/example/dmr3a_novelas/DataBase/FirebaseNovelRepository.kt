@@ -14,15 +14,7 @@ class FirebaseNovelRepository {
 
 
     private fun getUserId(): String? {
-        val userId = auth.currentUser?.uid ?: return null
-        var username: String? = null
-        database.child("users").child(userId).addListenerForSingleValueEvent(object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                username = snapshot.child("username").getValue(String::class.java)
-            }
-            override fun onCancelled(error: DatabaseError) {}
-        })
-        return username
+        return auth.currentUser?.uid
     }
 
     fun getAllNovels(onResult: (List<Novel>) -> Unit,
