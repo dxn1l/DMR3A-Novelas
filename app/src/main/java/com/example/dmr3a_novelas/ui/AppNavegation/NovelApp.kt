@@ -28,73 +28,40 @@ import com.example.dmr3a_novelas.DataBase.Novel
 import com.example.dmr3a_novelas.ui.Screens.AddNovelScreen
 import com.example.dmr3a_novelas.ui.Screens.AddReviewScreen
 import com.example.dmr3a_novelas.ui.Screens.FavoritesScreen
+import com.example.dmr3a_novelas.ui.Screens.LoginScreen
 import com.example.dmr3a_novelas.ui.Screens.NovelDetailsScreen
 import com.example.dmr3a_novelas.ui.Screens.ViewNovelsScreen
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun NovelApp() {
-
-    val novelRepository = remember { FirebaseNovelRepository()}
+    val novelRepository = remember { FirebaseNovelRepository() }
     var currentNovel by remember { mutableStateOf<Novel?>(null) }
-    var currentScreen by remember { mutableStateOf(Screen.ViewNovels) }
+    var currentScreen by remember { mutableStateOf(Screen.Login) } // Cambiar a Screen.Login
     var novelAdded by remember { mutableStateOf(false) }
     var reviewAdded by remember { mutableStateOf(false) }
 
-
-    MaterialTheme(
-
-        colorScheme = darkColorScheme(
-            background = Color.Blue
-        )
-    ){
-
+    MaterialTheme {
         Scaffold(
             topBar = {
                 CenterAlignedTopAppBar(
-                    title = { Text(
-                        when (currentScreen) {
-                            Screen.ViewNovels -> "Novelas"
-                            Screen.AddNovel -> "Añade una novela"
-                            Screen.Favorites -> "Favoritos"
-                            Screen.NovelDetails -> "Detalles"
-                            Screen.AddReview -> "Añadir reseña"
-                        }
-                    )
-                    },
-
+                    title = { Text(when (currentScreen) {
+                        Screen.Login -> "Login"
+                        Screen.ViewNovels -> "Novelas"
+                        Screen.AddNovel -> "Añade una novela"
+                        Screen.Favorites -> "Favoritos"
+                        Screen.NovelDetails -> "Detalles"
+                        Screen.AddReview -> "Añadir reseña"
+                    }) },
                     navigationIcon = {
-                        if (currentScreen == Screen.NovelDetails
-                        ) {
-                            IconButton(onClick = { currentScreen = Screen.ViewNovels
-                                novelAdded = false
-                            }) {
-                                Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
-                            }
-                        }
-                        else if (currentScreen == Screen.AddNovel) {
-                            IconButton(onClick = { currentScreen = Screen.ViewNovels
-                                novelAdded = false
-                            }) {
-                                Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
-                            }
-                        }else if (currentScreen == Screen.Favorites) {
-                            IconButton(onClick = { currentScreen = Screen.ViewNovels
-                                novelAdded = false
-                            }) {
-                                Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
-                            }
-                        }
-                        else if (currentScreen == Screen.AddReview) {
-                            reviewAdded = false
-                            IconButton(onClick = { currentScreen = Screen.NovelDetails }) {
+                        if (currentScreen != Screen.Login && currentScreen != Screen.ViewNovels) {
+                            IconButton(onClick = { currentScreen = Screen.ViewNovels }) {
                                 Icon(Icons.Filled.ArrowBack, contentDescription = "Volver")
                             }
                         }
                     },
-
                     actions = {
-                        if (currentScreen != Screen.AddNovel) {
+                        if (currentScreen != Screen.AddNovel && currentScreen != Screen.Login) {
                             IconButton(
                                 onClick = { currentScreen = Screen.Favorites },
                                 colors = IconButtonDefaults.iconButtonColors(
@@ -110,6 +77,7 @@ fun NovelApp() {
         ) { innerPadding ->
             Box(modifier = Modifier.padding(innerPadding)) {
                 when (currentScreen) {
+                    Screen.Login -> LoginScreen(onLoginSuccess = { currentScreen = Screen.ViewNovels })
                     Screen.ViewNovels -> ViewNovelsScreen(
                         novelRepository = novelRepository,
                         onAddNovelClick = { currentScreen = Screen.AddNovel },
@@ -127,7 +95,6 @@ fun NovelApp() {
                             novelAdded = true
                         }
                     )
-
                     Screen.Favorites -> FavoritesScreen(novelRepository = novelRepository, onNovelClick = { novel ->
                         currentNovel = novel
                         currentScreen = Screen.NovelDetails
@@ -148,7 +115,6 @@ fun NovelApp() {
                                 )
                             },
                             reviewAdded = reviewAdded
-
                         )
                     }
                     Screen.AddReview -> if (currentNovel != null) {
@@ -156,7 +122,7 @@ fun NovelApp() {
                             novel = currentNovel!!,
                             novelRepository = novelRepository,
                             onReviewAdded = { currentScreen = Screen.NovelDetails
-                                reviewAdded = true},
+                                reviewAdded = true },
                         )
                     }
                 }
@@ -164,11 +130,11 @@ fun NovelApp() {
         }
     }
 }
-
 enum class Screen {
     ViewNovels,
     AddNovel,
     Favorites,
     NovelDetails,
-    AddReview
+    AddReview,
+    Login
 }
